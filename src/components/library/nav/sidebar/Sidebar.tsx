@@ -19,7 +19,7 @@ const Sidebar: FC<FlexProps & { closeBtn?: ReactNode }> = ({ closeBtn, ...props 
 		isError,
 	} = useGetQuery({ path: `/sidebar/crm/${sidebarType}` });
 
-	const title = data?.shop?.name || process.env.NEXT_PUBLIC_STORE_NAME || 'Admin';
+	const title = data?.shop?.name || process.env.NEXT_PUBLIC_STORE_NAME || 'Bazarey Admin';
 
 	const main =
 		isFetching || !sidebarData

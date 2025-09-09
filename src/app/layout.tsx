@@ -6,8 +6,8 @@ import 'swiper/css';
 import { GeistSans } from 'geist/font/sans';
 
 export const metadata: Metadata = {
-	title: 'ADMIN | BAZARY',
-	description: 'ADMIN | BAZARY',
+	title: 'ADMIN | BAZAREY',
+	description: 'ADMIN | BAZAREY',
 };
 
 export const viewport = {
