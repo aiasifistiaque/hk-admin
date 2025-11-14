@@ -16,11 +16,10 @@ const EditorSidebar: FC<FlexProps & { closeBtn?: ReactNode; data?: any; doc?: an
 	...props
 }) => {
 	const router = useRouter();
-
 	const sidebar = data || sidebarData;
 	const textColor = useColorModeValue('text.dark', 'text.light');
 
-	const handleExit = () => router.replace('/storefront');
+	const handleExit = () => router.replace('/');
 
 	const decisionModal = (
 		<DecisionAlert
@@ -81,11 +80,12 @@ const EditorSidebar: FC<FlexProps & { closeBtn?: ReactNode; data?: any; doc?: an
 						) : item?.type == 'component' ? (
 							<EditContentModal
 								cursor='pointer'
+								slug={item?.slug || ''}
 								dataModel={item?.dataModel}
 								data={doc[item?.dataPath]}
 								contentType={item?.dataPath}
 								title={item?.title}
-								path={item?.path}>
+								path={item?.path || 'contents'}>
 								<SidebarItem
 									sx={{
 										color: textColor,

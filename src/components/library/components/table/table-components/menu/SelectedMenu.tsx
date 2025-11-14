@@ -1,15 +1,18 @@
 import { FC } from 'react';
 import { Menu, MenuButton, Button } from '@chakra-ui/react';
+
 import {
-	MenuContainer,
 	EditManyModal,
-	EditManySelectModal,
-	EditDataSelectModal,
-	Icon,
 	ExportManyModal,
 	SendBulkSmsModal,
 	CalculateModal,
-} from '../../../..';
+	EditManySelectModal,
+	EditDataSelectModal,
+} from '../../table-components/modals';
+
+import { Icon } from '../../../../icon';
+import { MenuContainer } from '../../../../menu';
+import BulkInvoiceExport from '../../../modals/export/BulkInvoiceExport';
 
 type TableMenuProps = {
 	path: string;
@@ -29,6 +32,7 @@ const SelectedMenu: FC<TableMenuProps> = ({ path, hide, data, items }) => {
 				leftIcon={<Icon name='action-menu' />}>
 				Menu
 			</MenuButton>
+
 			<MenuContainer>
 				{data?.map((item: any, i: number) => {
 					const commonProps = {
@@ -86,6 +90,14 @@ const SelectedMenu: FC<TableMenuProps> = ({ path, hide, data, items }) => {
 						case 'export':
 							return (
 								<ExportManyModal
+									key={i}
+									ids={items}
+									path={path}
+								/>
+							);
+						case 'bulk-invoice-export':
+							return (
+								<BulkInvoiceExport
 									key={i}
 									ids={items}
 									path={path}

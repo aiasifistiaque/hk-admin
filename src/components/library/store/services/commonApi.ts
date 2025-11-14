@@ -55,7 +55,12 @@ export const userApi = mainApi.injectEndpoints({
 		}),
 
 		getSelectData: builder.query<any, string>({
-			query: (id: any) => `${id}?limit=1000&sort=name`,
+			query: (id: any, sort?: string) => `${id}?limit=1000&sort=name`,
+			providesTags: ['filters', 'products', 'brands', 'categories', 'coupons', 'collections'],
+		}),
+		getDataTags: builder.query<any, any>({
+			query: ({ path, sort = 'name' }: { path: string; sort?: string }) =>
+				`${path}?limit=1000&sort=${sort}`,
 			providesTags: ['filters', 'products', 'brands', 'categories', 'coupons', 'collections'],
 		}),
 		getById: builder.query<any, { path: string; id: any; invalidate?: string[] }>({
@@ -104,7 +109,7 @@ export const userApi = mainApi.injectEndpoints({
 					const link = document.createElement('a');
 					link.href = url;
 					const date = new Date();
-					const fileExtension = arg.type == 'pdf' ? 'pdf' : 'csv';
+					const fileExtension = arg.type == 'csv' ? 'csv' : 'pdf';
 
 					const timestamp = date.toISOString().replace(/[:.]/g, '-');
 					const name = arg?.path.toUpperCase().replace('/', '_');
@@ -137,8 +142,11 @@ export const userApi = mainApi.injectEndpoints({
 					const link = document.createElement('a');
 					link.href = url;
 					const date = new Date();
+					const fileExtension = arg.type == 'csv' ? 'csv' : 'pdf';
+
 					const timestamp = date.toISOString().replace(/[:.]/g, '-');
-					link.setAttribute('download', `data_${timestamp}.csv`);
+					const name = arg?.path.toUpperCase().replace('/', '_');
+					link.setAttribute('download', `${name}_${timestamp}.${fileExtension}`);
 
 					document.body.appendChild(link);
 					link.click();
@@ -219,5 +227,6 @@ export const {
 	useDeleteProductlistByKeyIdMutation,
 	useGetSchemaQuery,
 	useGetConfigQuery,
+	useGetDataTagsQuery,
 	useGetRouteQuery,
 } = userApi;

@@ -1,8 +1,10 @@
 'use client';
+
 import { TableCellProps, Checkbox, Flex } from '@chakra-ui/react';
 import { useState, FC, useEffect, ChangeEvent } from 'react';
 import { CustomTd } from '.';
-import { useAppDispatch, useAppSelector, selectItem } from '../../../..';
+import { selectItem } from '../../../../store';
+import { useAppDispatch, useAppSelector } from '../../../../hooks';
 
 // Define the type for the props of the TableData component
 type TableDataPropsType = TableCellProps & {

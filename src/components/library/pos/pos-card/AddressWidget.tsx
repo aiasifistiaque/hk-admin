@@ -23,9 +23,9 @@ import {
 	useGetByIdQuery,
 	DiscardButton,
 	Address,
-	removeAddress,
-	setAddress,
+	setVariantCartAddress,
 } from '../..';
+import { useEffect } from 'react';
 
 const inputFields: InputData<Address>[] = [
 	{
@@ -37,7 +37,6 @@ const inputFields: InputData<Address>[] = [
 	{
 		name: 'email',
 		label: 'Recipient Email',
-		isRequired: true,
 		type: 'text',
 		span: 1,
 	},
@@ -49,45 +48,17 @@ const inputFields: InputData<Address>[] = [
 		span: 1,
 	},
 	{
-		name: 'street',
-		label: 'Street Address',
+		name: 'address',
+		label: 'Full Address',
 		isRequired: true,
 		type: 'textarea',
-	},
-	{
-		name: 'city',
-		label: 'City',
-		isRequired: true,
-		type: 'text',
-		span: 1,
-	},
-	{
-		name: 'state',
-		label: 'State',
-		isRequired: false,
-		type: 'text',
-		span: 1,
-	},
-	{
-		name: 'country',
-		label: 'Country',
-		isRequired: false,
-		type: 'text',
-		span: 1,
-	},
-	{
-		name: 'postalCode',
-		label: 'Post Code',
-		isRequired: true,
-		type: 'text',
-		span: 1,
 	},
 ];
 
 const AddressWidget = ({ id }: { id?: string }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const dispatch = useAppDispatch();
-	const { isAddressSet, address, user }: any = useAppSelector(state => state.cart);
+	const { isAddressSet, address, user }: any = useAppSelector(state => state.variantCart);
 
 	const { data, isFetching } = useGetByIdQuery(
 		{
@@ -101,12 +72,18 @@ const AddressWidget = ({ id }: { id?: string }) => {
 
 	const [formData, setFormData] = useFormData<any>(inputFields);
 
+	useEffect(() => {
+		if (address) {
+			setFormData({
+				name: address?.name,
+				email: address?.email,
+				phone: address?.phone,
+				address: address?.address,
+			});
+		}
+	}, [address]);
+
 	const onModalOpen = () => {
-		setFormData({
-			name: data?.name,
-			email: data?.email,
-			phone: data?.phone,
-		});
 		onOpen();
 	};
 
@@ -117,32 +94,43 @@ const AddressWidget = ({ id }: { id?: string }) => {
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		dispatch(setAddress(formData));
+		dispatch(setVariantCartAddress(formData));
 		onModalClose();
 	};
 
 	const deleteAddress = (e: any) => {
-		dispatch(removeAddress());
+		setFormData({
+			name: address?.name,
+			email: address?.email,
+			phone: address?.phone,
+			address: address?.address,
+		});
+		onOpen();
 	};
 
 	const addressIsSet = (
 		<Flex
 			justify='space-between'
 			flex={1}>
-			<Column gap={0}>
+			<Column gap={1}>
 				<Text
-					fontSize='.8rem'
+					fontSize='.85rem'
 					fontWeight='600'>
-					{`${address?.street}, ${address?.city},`} {`${address?.postalCode}, ${address?.country}`}
+					{`${address?.name} (${address?.phone})`}
+				</Text>
+				<Text fontSize='.8rem'>
+					<strong>Address: </strong>
+					{address?.address}
 				</Text>
 			</Column>
 
 			<IconButton
-				tooltip='Delete Address'
-				aria-label='Delete Address'
-				colorScheme='red'
+				tooltip='Edit Address'
+				aria-label='Edit Address'
+				colorScheme='brand'
 				variant='outline'
-				iconName='delete'
+				borderRadius='sm'
+				iconName='edit'
 				size='xs'
 				onClick={deleteAddress}
 			/>

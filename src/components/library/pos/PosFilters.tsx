@@ -62,8 +62,9 @@ const PosFilters = ({ path, filter }: { path: string; filter: string }) => {
 			{({ isOpen }) => (
 				<>
 					<ButtonOfMenu
-						w={{ base: '100%', md: 'inherit' }}
+						w={{ base: '100%', md: '300px' }}
 						bg='white'
+						borderRadius='sm'
 						_dark={{ bg: 'sidebar.dark' }}
 						isActive={isOpen}>
 						{title}

@@ -148,7 +148,8 @@ const ViewOrderModal = ({ id }: { id: string }) => {
 				<ModalContainer isSmallScreen={isSmallScreen}>
 					<Header>
 						Order Details
-						{data?.customer && <OrderCustomer data={data?.customer} />}
+						{/* {data?.customer && <OrderCustomer data={data?.customer} />} */}
+						<OrderCustomer data={data?.address} />
 						{data?.address && <OrderAddress address={data?.address} />}
 					</Header>
 					<CloseButton />

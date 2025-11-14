@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import { NextPage } from 'next';
 import { ServerPage } from '@/components/library';
@@ -9,8 +8,8 @@ interface Props {
 	};
 }
 
-const Page: NextPage<any> = ({ params }) => {
-	const { slug } = params;
+const Page: NextPage<any> = async ({ params }: any) => {
+	const { slug } = await params;
 	return <ServerPage route={slug} />;
 };
 

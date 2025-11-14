@@ -1,64 +1,72 @@
-import { FC } from 'react';
+// import { FC } from 'react';
 
-import { FormControl, InputProps, GridProps, Flex } from '@chakra-ui/react';
+// import { FormControl, InputProps, GridProps, Flex } from '@chakra-ui/react';
 
-import IconModal from '../../modals/upload-modal/IconModal';
+// import IconModal from '../../modals/upload-modal/IconModal';
 
-import HelperText from '../../form/label/HelperText';
-import Label from '../../form/label/Label';
-import LucideIcon from '../../icon/LucideIcon';
+// import HelperText from '../../form/label/HelperText';
+// import Label from '../../form/label/Label';
+// import LucideIcon from '../../icon/LucideIcon';
 
-type FormDataType = InputProps &
-	GridProps & {
-		value: string | undefined;
-		onChange: any;
-		isRequired?: boolean;
-		label?: string;
-		helper?: string;
-		isDisabled?: boolean;
-		style?: any;
-		folder?: string;
-	};
+// type FormDataType = InputProps &
+// 	GridProps & {
+// 		value: string | undefined;
+// 		onChange: any;
+// 		isRequired?: boolean;
+// 		label?: string;
+// 		helper?: string;
+// 		isDisabled?: boolean;
+// 		style?: any;
+// 		folder?: string;
+// 	};
 
-const VIcon: FC<FormDataType> = ({
-	value,
-	onChange,
-	isRequired = false,
-	label,
-	helper,
-	folder,
-}) => {
-	const type = value ? 'edit' : 'add';
+// const VIcon: FC<FormDataType> = ({
+// 	value,
+// 	onChange,
+// 	isRequired = false,
+// 	label,
+// 	helper,
+// 	folder,
+// }) => {
+// 	const type = value ? 'edit' : 'add';
 
-	return (
-		<FormControl isRequired={isRequired}>
-			<Flex
-				flexDir='column'
-				gap={2}
-				w='full'>
-				<Label>{label}</Label>
+// 	return (
+// 		<FormControl isRequired={isRequired}>
+// 			<Flex
+// 				flexDir='column'
+// 				gap={2}
+// 				w='full'>
+// 				<Label>{label}</Label>
 
-				<Flex
-					align='center'
-					gap={4}>
-					{value && (
-						<LucideIcon
-							size={44}
-							name={value}
-						/>
-					)}
-					<IconModal
-						type={type}
-						handleImage={onChange}
-						multiple={true}
-						folder={folder}
-						fileType='image'
-					/>
-				</Flex>
-				{helper && <HelperText>{helper}</HelperText>}
-			</Flex>
-		</FormControl>
-	);
+// 				<Flex
+// 					align='center'
+// 					gap={4}>
+// 					{value && (
+// 						<LucideIcon
+// 							size={44}
+// 							name={value}
+// 						/>
+// 					)}
+// 					<IconModal
+// 						type={type}
+// 						handleImage={onChange}
+// 						multiple={true}
+// 						folder={folder}
+// 						fileType='image'
+// 					/>
+// 				</Flex>
+// 				{helper && <HelperText>{helper}</HelperText>}
+// 			</Flex>
+// 		</FormControl>
+// 	);
+// };
+
+// export default VIcon;
+
+import React from 'react';
+
+const VIcon = () => {
+	return <div>VIcon</div>;
 };
 
 export default VIcon;

@@ -17,11 +17,18 @@ import {
 	DrawerHeader,
 	DrawerBody,
 	useColorModeValue,
+	Text,
 } from '@chakra-ui/react';
 
 import PosInput from './PosInput';
 import OrderPriceDetails from './pos-card/OrderPriceDetails/OrderPriceDetails';
-import { useAddOrderMutation, useGetCartTotalMutation } from '../';
+import {
+	JsonView,
+	resetVariantCart,
+	useAddOrderMutation,
+	useGetCartTotalMutation,
+	usePostMutation,
+} from '../';
 
 import {
 	resetCart,
@@ -50,7 +57,7 @@ import { useRouter } from 'next/navigation';
 const OrderModal = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { cartItems, total, user, subTotal, discount, vat, shipping, address, isAddressSet } =
-		useAppSelector(state => state.cart);
+		useAppSelector(state => state.variantCart);
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 
@@ -63,7 +70,7 @@ const OrderModal = () => {
 	const [emailReceipt, setEmailReceipt] = useState(false);
 	const [trnxRef, setTrnxRef] = useState<any>();
 
-	const [createOrder, createOrderResult] = useAddOrderMutation();
+	const [createOrder, createOrderResult] = usePostMutation();
 	const { isSuccess, isError, isLoading, error, data } = createOrderResult;
 
 	useEffect(() => {
@@ -91,24 +98,47 @@ const OrderModal = () => {
 		...createOrderResult,
 	});
 
+	// const invoice = getInvoiceTotal({
+	// 	items,
+	// 	discount: formData?.discount,
+	// 	shipping: formData?.shippingCost,
+	// });
+
 	const handleCreateOrder = () => {
 		createOrder({
-			cart: result?.data,
-			paymentMethod,
-			paymentAmount: paidAmount,
-			paidAmount,
-			note,
-			status,
-			address,
-			customer: user,
-			emailReceipt,
-			trnxRef,
+			invalidate: ['orders', 'products'],
+			path: 'orders',
+			body: {
+				cart: result?.data,
+				paymentMethod,
+				paymentAmount: paidAmount,
+				note,
+				address,
+				customer: user,
+				paidAmount,
+				origin: 'pos-terminal',
+				trnxRef,
+				emailReceipt,
+				status,
+			},
 		});
+		// createOrder({
+		// 	cart: result?.data,
+		// 	paymentMethod,
+		// 	paymentAmount: paidAmount,
+		// 	paidAmount,
+		// 	note,
+		// 	status,
+		// 	address,
+		// 	customer: user,
+		// 	emailReceipt,
+		// 	trnxRef,
+		// });
 	};
 
 	useEffect(() => {
 		if (!isLoading && isSuccess) {
-			dispatch(resetCart());
+			dispatch(resetVariantCart());
 			onModalClose();
 			router.push(`/orders/${data?._id}`);
 		}
@@ -125,20 +155,22 @@ const OrderModal = () => {
 				<OrderItemHeading textAlign='right'>Amount</OrderItemHeading>
 			</OrderRightSectionContainer>
 			<OrderItemsContainer>
-				{result?.data?.items?.map((item: any, i: number) => (
+				{cartItems?.map((item: any, i: number) => (
 					<Grid
 						gridTemplateColumns='2fr 1fr 1fr 1fr'
 						key={i}>
+						{/* <JsonView data={item} /> */}
 						<OrderItemText fontWeight='600'>
-							{i + 1}. {item?.name}
+							{i + 1}. {item?.name} {item?.variantName && `- (${item?.variantName})`} <br />{' '}
+							{item?.sku && <>SKU: {item?.sku}</>}{' '}
 						</OrderItemText>
 						<OrderItemText textAlign='center'>
-							{item?.unitPrice?.toFixed(2)?.toLocaleString()}
+							{currency.symbol} {item?.unitPrice?.toFixed(2)?.toLocaleString()}
 						</OrderItemText>
 						<OrderItemText textAlign='center'>{item?.qty}</OrderItemText>
 						<OrderItemText textAlign='right'>
 							{currency.symbol}
-							{item?.totalPrice?.toFixed(2)?.toLocaleString()}
+							{(item?.unitPrice * item?.qty)?.toFixed(2)?.toLocaleString()}
 						</OrderItemText>
 					</Grid>
 				))}
@@ -189,7 +221,7 @@ const OrderModal = () => {
 				valueType='select'
 				onChange={(e: any) => setPaymentMethod(e?.target?.value)}
 				label='Payment Method'
-				options={['cash', 'card', 'bkash', 'nagad', 'other']}
+				options={['cod', 'cash', 'card', 'check', 'bkash', 'nagad', 'other']}
 			/>
 			<PosInput
 				value={trnxRef}
@@ -254,10 +286,17 @@ const OrderModal = () => {
 				<ModalContainer isSmallScreen={isSmallScreen}>
 					<Header>
 						Order Details
+						{/* {isAddressSet && (
+							<OrderCustomer data={{ name: address?.name, email: address?.email }} />
+						)} */}
 						{isAddressSet && (
-							<OrderCustomer
-								data={{ name: address?.name, email: address?.email, phone: address?.phone }}
-							/>
+							<Text
+								mt={2}
+								fontSize='.9rem'
+								fontWeight='500'>
+								<b>Recipient:</b> {address?.name} {address?.email && `, Email: ${address?.email}`}
+								{address?.phone && `, Phone: ${address?.phone}`}
+							</Text>
 						)}
 						{isAddressSet && <OrderAddress address={{ ...address }} />}
 					</Header>

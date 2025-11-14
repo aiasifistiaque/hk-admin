@@ -36,8 +36,12 @@ import VAlignment from '../../../utils/inputs/VAlign';
 import VFile from '../../../utils/inputs/VFile';
 import VVideo from '../../../utils/inputs/VVideo.new';
 import VIcon from '../../../utils/inputs/VIcon';
+import VVariant from '../../../utils/inputs/VVariant';
+import VSelectTags from '../../../utils/inputs/VSelectTags';
 
 import { flexAlignOptions, flexJustifyOptions, textAlignOptions } from './options';
+import VModelFields from '@/components/library/utils/inputs/VModelFields';
+import { VFormFields, VSettings } from '@/components/library/utils/inputs';
 
 type Option = {
 	label: string;
@@ -128,7 +132,7 @@ const FormInput: FC<FormInputProps> = ({
 
 		case 'icon':
 			return (
-				<VIcon
+				<VInput
 					isRequired={isRequired}
 					onChange={props.onChange}
 					helper={item?.helper}
@@ -144,6 +148,21 @@ const FormInput: FC<FormInputProps> = ({
 					isRequired={isRequired}
 					onChange={props.onChange}
 					helper={item?.helper}
+					{...props}
+				/>
+			);
+
+		case 'variant':
+			return (
+				<VVariant
+					form={formData}
+					onChange={props.onChange}
+					isRequired={isRequired}
+					name={props.name}
+					helper={item?.helper}
+					hasImage={item?.hasImage}
+					limit={item?.limit}
+					section={item?.section}
 					{...props}
 				/>
 			);
@@ -294,6 +313,8 @@ const FormInput: FC<FormInputProps> = ({
 					isRequired={isRequired}
 					model={props?.model || ''}
 					helper={item?.helper}
+					labelKey={item?.labelKey || 'name'}
+					valueKey={item?.valueKey || '_id'}
 					{...props}
 				/>
 			);
@@ -422,6 +443,69 @@ const FormInput: FC<FormInputProps> = ({
 					{...props}
 				/>
 			);
+		case 'select-tag':
+			return (
+				<VSelectTags
+					type={type}
+					helper={item?.helper}
+					isRequired={isRequired}
+					options={item?.options || []}
+					{...props}
+				/>
+			);
+		case 'case-tag':
+			return (
+				<VTags
+					type={type}
+					helper={item?.helper}
+					isRequired={isRequired}
+					lowercase={false}
+					{...props}
+				/>
+			);
+		case 'model-fields':
+			return (
+				<VModelFields
+					form={formData}
+					type={type}
+					helper={item?.helper}
+					isRequired={isRequired}
+					{...props}
+				/>
+			);
+		case 'form-fields':
+			return (
+				<VFormFields
+					form={formData}
+					type={type}
+					helper={item?.helper}
+					isRequired={isRequired}
+					onChange={props.onChange}
+					{...props}
+				/>
+			);
+		case 'settings':
+			return (
+				<VSettings
+					form={formData}
+					type={type}
+					helper={item?.helper}
+					isRequired={isRequired}
+					onChange={props.onChange}
+					{...props}
+				/>
+			);
+		case 'section-tag':
+			return (
+				<VTags
+					type={type}
+					helper={item?.helper}
+					isRequired={isRequired}
+					section={true}
+					{...props}
+				/>
+			);
+
 		case 'custom-attribute':
 			return (
 				<VCustomAttributes
@@ -439,6 +523,7 @@ const FormInput: FC<FormInputProps> = ({
 					name={props.name}
 					helper={item?.helper}
 					hasImage={item?.hasImage}
+					isLucideIcon={item?.isLucideIcon}
 					limit={item?.limit}
 					section={item?.section}
 					{...props}

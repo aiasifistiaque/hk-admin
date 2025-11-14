@@ -19,7 +19,7 @@ const SelectContainer: FC<InputContainerProps> = ({ children, ...props }) => {
 			color='text.500'
 			borderColor='selectBorder.light'
 			_dark={{
-				color: 'gray.300',
+				color: '#ebebeb',
 				borderColor: 'selectBorder.dark',
 			}}
 			boxShadow='sm'

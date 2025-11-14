@@ -10,9 +10,7 @@ import {
 } from '../..';
 
 const PosCard = ({ item }: { item: any }) => {
-	const title = `${item?.name} ${
-		item?.unit !== undefined ? `(${item?.unitValue} ${item?.unit})` : ''
-	}`;
+	const title = `${item?.name}`;
 
 	const price = (
 		<>
@@ -62,15 +60,16 @@ const PosCard = ({ item }: { item: any }) => {
 				<Heading size='xs'>{title}</Heading>
 				<>{sku}</>
 				<Flex
+					fontWeight='600'
 					gap={1}
 					align='center'>
 					{price}
 				</Flex>
-				<Flex
+				{/* <Flex
 					align='flex-end'
 					flex={1}>
 					{quickView}
-				</Flex>
+				</Flex> */}
 			</Column>
 			{/* </CardContainer> */}
 		</AddToCartModal>

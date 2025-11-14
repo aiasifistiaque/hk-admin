@@ -20,7 +20,7 @@ const PurchaseProduct: FC<PurchaseProductProps> = ({ item, i, setItem, isMobile,
 
 	useEffect(() => {
 		setQty(item?.qty);
-		setPrice(item?.price);
+		setPrice(item?.sellPrice);
 	}, []);
 
 	const handlePrice = (e: any) => {

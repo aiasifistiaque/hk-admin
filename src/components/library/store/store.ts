@@ -3,7 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 
 const TOKEN_NAME = process.env.NEXT_PUBLIC_TOKEN_NAME || 'MINT_CAFE_TOKEN_TWO';
 
-import { routeSlice, tableSlice, cartSlice, authSlice, builderSlice } from '../';
+import { routeSlice, tableSlice, cartSlice, authSlice, builderSlice, variantCartSlice } from '../';
 import { mainApi } from '.';
 
 export const store = configureStore({
@@ -12,6 +12,7 @@ export const store = configureStore({
 		route: routeSlice.reducer,
 		table: tableSlice.reducer,
 		cart: cartSlice.reducer,
+		variantCart: variantCartSlice.reducer,
 		builder: builderSlice.reducer,
 		[mainApi.reducerPath]: mainApi.reducer,
 	},

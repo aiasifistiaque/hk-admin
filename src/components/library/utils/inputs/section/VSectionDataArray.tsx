@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 
 import { FormControl, Image, Stack, Flex, Text, Heading } from '@chakra-ui/react';
-import { HelperText, Label, ImageContainer, Column } from '../../..';
+import { HelperText, Label, ImageContainer, Column, SpaceBetween } from '../../..';
 import DeleteSection from './DeleteSection';
 import AddSectionDataModal from './AddSectionDataModal';
 
@@ -14,6 +14,7 @@ type FormDataType = {
 	isDisabled?: boolean;
 	name: any;
 	hasImage?: boolean;
+	isLucideIcon?: boolean;
 	limit?: number;
 	section?: any;
 };
@@ -24,6 +25,7 @@ const VSectionDataArray: FC<FormDataType> = ({
 	isRequired = false,
 	label,
 	helper,
+	isLucideIcon,
 	isDisabled = false,
 	name,
 	limit = 999,
@@ -66,9 +68,7 @@ const VSectionDataArray: FC<FormDataType> = ({
 							<Column
 								gap={4}
 								w='full'>
-								<Flex
-									justify='space-between'
-									align='center'>
+								<SpaceBetween>
 									<Heading size='md'>{item?.[section?.display?.title]}</Heading>
 									<Flex gap={1}>
 										<AddSectionDataModal
@@ -88,7 +88,7 @@ const VSectionDataArray: FC<FormDataType> = ({
 											value={value}
 										/>
 									</Flex>
-								</Flex>
+								</SpaceBetween>
 
 								<Text noOfLines={6}>{item?.[section?.display?.description]}</Text>
 							</Column>

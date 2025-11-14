@@ -20,8 +20,13 @@ import {
 	FormMain,
 	DiscardButton,
 	ModalSubmitButton,
+	useGetContent,
+	useUpdateByIdMutation,
+	useLazyGetByIdToEditQuery,
+	useGetSchemaQuery,
+	useGetByIdQuery,
+	usePostMutation,
 } from '../..';
-import { useUpdateContentMutation } from '../../store/services/contentApi';
 
 type CreateModalProps = FlexProps & {
 	dataModel: InputData<any>[];
@@ -32,6 +37,7 @@ type CreateModalProps = FlexProps & {
 	contentType?: 'basic' | 'content';
 	setIsOpen?: any;
 	setHover?: any;
+	slug: string;
 };
 
 const EditContentModal = ({
@@ -42,17 +48,33 @@ const EditContentModal = ({
 	title,
 	contentType = 'content',
 	setIsOpen,
+	slug,
 	setHover,
 	...props
 }: CreateModalProps) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [formData, setFormData] = useFormData<any>(dataModel, data);
-	const [trigger, result] = useUpdateContentMutation();
+
+	const {
+		data: contentData,
+		isFetching: contentLoading,
+		isSuccess: contentSuccess,
+	} = useGetByIdQuery({
+		path: path,
+		id: `get/slug/${slug}`,
+	});
+
+	const [fetch, { data: prevData, isFetching, isUninitialized }] = useLazyGetByIdToEditQuery();
+	const [formData, setFormData] = useFormData<any>(data, prevData);
+
+	const { _id } = useGetContent(slug);
+
+	const [trigger, result] = _id ? useUpdateByIdMutation() : usePostMutation();
 
 	const onModalOpen = () => {
-		setFormData(data);
 		onOpen();
-		setIsOpen && setIsOpen(true);
+		let newFieldData = {};
+
+		fetch({ path: 'contents', id: _id });
 	};
 
 	const { isSuccess, isLoading, isError, error } = result;
@@ -70,11 +92,27 @@ const EditContentModal = ({
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		e.stopPropagation();
-		trigger({
-			body: formData,
-			path,
-			type: contentType,
-		});
+		const { _id, ...rest } = formData;
+		if (_id) {
+			trigger({
+				body: changedData,
+				path: `contents`,
+				id: _id,
+			});
+		} else {
+			trigger({
+				body: {
+					slug: slug,
+					name: `Content: ${slug}`,
+					status: 'published',
+					category: 'content',
+					isVisible: true,
+					...changedData,
+				},
+				path: `contents`,
+				id: _id,
+			});
+		}
 	};
 
 	const onModalClose = () => {
@@ -90,6 +128,10 @@ const EditContentModal = ({
 			onModalClose();
 		}
 	}, [isLoading]);
+
+	useEffect(() => {
+		if (prevData) setFormData(prevData);
+	}, [prevData, isFetching]);
 
 	return (
 		<>
