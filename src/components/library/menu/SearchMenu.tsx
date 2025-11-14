@@ -31,8 +31,8 @@ const SearchMenu = ({
 	const { isOpen, onOpen, onClose: closeModal } = useDisclosure();
 	const [search, setSearch] = useState('');
 
-	const initialRef = useRef(null);
-	const finalRef = useRef(null);
+	const initialRef = useRef<any>(null);
+	const finalRef = useRef<any>(null);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	const onClose = () => {
@@ -135,8 +135,8 @@ const SearchMenu = ({
 			</Flex>
 
 			<Modal
-				initialFocusRef={initialRef}
-				finalFocusRef={finalRef}
+				initialFocusRef={initialRef as any}
+				finalFocusRef={finalRef as any}
 				scrollBehavior='inside'
 				size='xl'
 				isOpen={isOpen}

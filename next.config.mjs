@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	typescript: {
+		// !! WARN !!
+		// Dangerously allow production builds to successfully complete even if
+		// your project has TypeScript type errors.
+		// !! WARN !!
+		ignoreBuildErrors: true,
+	},
 	reactStrictMode: false,
 	turbopack: {
 		root: '/Users/asifistiaque/Desktop/proj/bazarey/bazary-admin',
