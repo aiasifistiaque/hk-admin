@@ -11,7 +11,7 @@ const InputElement = ({ ...props }: InputProps) => {
 			focusBorderColor={borderColor}
 			color='text.500'
 			_dark={{
-				color: 'gray.300',
+				color: '#ebebeb',
 			}}
 			_placeholder={{ fontSize: 14, fontWeight: '500' }}
 			{...props}

@@ -6,13 +6,13 @@ import {
 	useAppDispatch,
 	useAppSelector,
 	calculateCartTotals,
-	deleteAllFromCart,
-	updateUser,
 	Column,
 	EmptyCartModal,
 	SpaceBetween,
 	IconButton,
 	useGetCartTotalMutation,
+	deleteAllFromVariantCart,
+	updateVariantCartUser,
 } from '../';
 
 import EditablePriceItem from './pos-card/EditablePriceItem';
@@ -31,7 +31,7 @@ const PosCartDrawer = () => {
 	const { isLoading, isSuccess, isError, error, data } = result;
 
 	const { cartItems, subTotal, vat, discount, shipping, user, total }: any = useAppSelector(
-		(state: any) => state.cart
+		(state: any) => state.variantCart
 	);
 
 	const [val, setVal] = useState<{ discount: number; shipping: number }>({
@@ -48,7 +48,7 @@ const PosCartDrawer = () => {
 		}
 	};
 	const handleResetCart = () => {
-		dispatch(deleteAllFromCart());
+		dispatch(deleteAllFromVariantCart());
 		trigger({ items: [] });
 	};
 
@@ -67,7 +67,7 @@ const PosCartDrawer = () => {
 			insert={true}
 			path='customers'
 			value={user}
-			setValue={(e: string) => dispatch(updateUser(e))}
+			setValue={(e: string) => dispatch(updateVariantCartUser(e))}
 			defaultValue={{ _id: 'guest', name: 'Walk in Customer' }}
 		/>
 	);

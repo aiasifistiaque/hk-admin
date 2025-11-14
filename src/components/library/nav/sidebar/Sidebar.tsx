@@ -9,8 +9,7 @@ import { SidebarBody, SidebarContainer, SidebarHeading, SidebarLogo } from './si
 import Link from 'next/link';
 
 const Sidebar: FC<FlexProps & { closeBtn?: ReactNode }> = ({ closeBtn, ...props }) => {
-	// const sidebarType = process.env.NEXT_PUBLIC_SIDEBAR_TYPE || 'page';
-	const sidebarType = process.env.NEXT_PUBLIC_SIDEBAR_TYPE || 'server';
+	const sidebarType = process.env.NEXT_PUBLIC_SIDEBAR_TYPE || 'generic';
 
 	const { data } = useGetSelfQuery({});
 	const {
@@ -19,7 +18,7 @@ const Sidebar: FC<FlexProps & { closeBtn?: ReactNode }> = ({ closeBtn, ...props 
 		isError,
 	} = useGetQuery({ path: `/sidebar/crm/${sidebarType}` });
 
-	const title = data?.shop?.name || process.env.NEXT_PUBLIC_STORE_NAME || 'Bazarey Admin';
+	const title = data?.shop?.name || process.env.NEXT_PUBLIC_STORE_NAME || 'Admin';
 
 	const main =
 		isFetching || !sidebarData

@@ -12,7 +12,7 @@ type ResultContainerProps = FlexProps & {
 };
 
 const PosResultContainer: FC<ResultContainerProps> = ({ data, cart, ...props }) => {
-	const { cartItems, total } = useAppSelector(state => state.cart);
+	const { cartItems, total } = useAppSelector(state => state.variantCart);
 	const [count, setCount] = useState<number>(0);
 
 	useEffect(() => {

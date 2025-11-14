@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useGetCartTotalMutation } from '../../../';
+import { JsonView, useGetCartTotalMutation } from '../../../';
 import { Flex, Heading, Text } from '@chakra-ui/react';
 import { CartItemContainer as Container, QtyButtons, CartItemDeleteButton } from '.';
 

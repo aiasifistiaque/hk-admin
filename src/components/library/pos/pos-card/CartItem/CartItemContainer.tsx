@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import { Grid } from '@chakra-ui/react';
+import { Grid, GridProps } from '@chakra-ui/react';
 
-const CartItemContainer = ({ children }: { children: ReactNode }) => (
+const CartItemContainer = ({ children, ...props }: GridProps & { children: ReactNode }) => (
 	<Grid
 		borderBottomWidth={1}
 		gridTemplateColumns='1fr 4fr 2fr'
@@ -10,7 +10,8 @@ const CartItemContainer = ({ children }: { children: ReactNode }) => (
 		_dark={{
 			borderColor: 'stroke.deepD',
 		}}
-		w='full'>
+		w='full'
+		{...props}>
 		{children}
 	</Grid>
 );

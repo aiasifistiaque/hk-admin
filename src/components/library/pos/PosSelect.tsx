@@ -1,12 +1,30 @@
 'use client';
 
-import { Menu, MenuGroup, Flex, Input, useDisclosure, MenuDivider, Button } from '@chakra-ui/react';
+import {
+	Menu,
+	MenuGroup,
+	Flex,
+	Input,
+	useDisclosure,
+	MenuDivider,
+	Button,
+	Text,
+	Badge,
+} from '@chakra-ui/react';
 import { useState, useRef } from 'react';
 
 import ItemOfMenu from './ItemOfMenu';
 import ButtonOfMenu from './ButtonOfMenu';
 
-import { MenuContainer, MenuItem, CreateModal, useGetAllQuery } from '../';
+import {
+	MenuContainer,
+	MenuItem,
+	CreateModal,
+	useGetAllQuery,
+	Column,
+	setVariantCartAddress,
+	useAppDispatch,
+} from '../';
 
 const WIDTH = '300px';
 const MAX_H = '300px';
@@ -24,7 +42,7 @@ const PosSelect = ({
 	path: string;
 	value: any;
 	setValue: any;
-	defaultValue: { _id: string; name: string };
+	defaultValue: { _id: string | undefined; name: string };
 	insert?: boolean;
 	insertPath?: string;
 	dataModel?: any;
@@ -42,7 +60,7 @@ const PosSelect = ({
 
 	const { data, isFetching, isError, error, isSuccess } = useGetAllQuery({
 		path,
-		limit: '999',
+		limit: 999,
 		sort: 'name',
 		search,
 	});
@@ -51,9 +69,18 @@ const PosSelect = ({
 		setSearch(e.target.value);
 	};
 
+	const dispatch = useAppDispatch();
+
 	const handleChange = (e: any) => {
 		setTitle(e?.name);
 		setValue(e?._id);
+		dispatch(
+			setVariantCartAddress({
+				name: e?.name || '',
+				phone: e?.phone || '',
+				address: e?.address || '',
+			})
+		);
 		onClose();
 	};
 
@@ -63,7 +90,14 @@ const PosSelect = ({
 			id={item?._id}
 			key={i}
 			onClick={() => handleChange(item)}>
-			{item?.name}
+			<Column gap={0}>
+				<Text fontWeight='bold'>
+					{item?.name}
+					{item?.isRegisteredOnline && ' 🟢'}
+				</Text>
+				{item?.email && <Text fontSize='13px'>{item?.email}</Text>}
+				{item?.phone && <Text fontSize='14px'>{item?.phone}</Text>}
+			</Column>
 		</ItemOfMenu>
 	));
 	const btnRef = useRef<any>(null);
@@ -87,7 +121,12 @@ const PosSelect = ({
 				onClose={close}>
 				{() => (
 					<>
-						<ButtonOfMenu isActive={isOpen}>{title}</ButtonOfMenu>
+						<ButtonOfMenu
+							h='36px'
+							borderRadius='sm'
+							isActive={isOpen}>
+							{title}
+						</ButtonOfMenu>
 
 						<MenuContainer w={WIDTH}>
 							<MenuGroup>
@@ -106,10 +145,10 @@ const PosSelect = ({
 							{insert && <MenuItem onClick={() => btnRef.current.click()}>Add {path}</MenuItem>}
 
 							<MenuDivider />
-							<Flex
-								flexDir='column'
+							<Column
 								w='100%'
 								maxH={MAX_H}
+								overflowX='hidden'
 								overflowY='scroll'>
 								<MenuItem
 									w={WIDTH}
@@ -117,7 +156,7 @@ const PosSelect = ({
 									{defaultValue?.name || `Select`}
 								</MenuItem>
 								{renderMenuItems}
-							</Flex>
+							</Column>
 						</MenuContainer>
 					</>
 				)}

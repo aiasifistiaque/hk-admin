@@ -6,9 +6,10 @@ type ViewContentContainerType = FlexProps & {
 	children: ReactNode;
 	title?: string;
 	dataModel: any;
-	data: any;
+	data?: any;
 	edit?: boolean;
 	path?: string;
+	slug?: string;
 	type?: 'basic' | 'content';
 };
 
@@ -19,6 +20,7 @@ const ViewContentContainer: FC<ViewContentContainerType> = ({
 	data,
 	edit = true,
 	path,
+	slug,
 	type = 'content',
 	...props
 }) => {
@@ -29,6 +31,7 @@ const ViewContentContainer: FC<ViewContentContainerType> = ({
 					<EditContentModal
 						path={path}
 						data={data}
+						slug={slug || ''}
 						contentType={type}
 						dataModel={dataModel}>
 						<Button

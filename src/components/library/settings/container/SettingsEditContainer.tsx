@@ -8,8 +8,11 @@ import {
 	Grid,
 	FlexProps,
 	HeadingProps,
+	Text,
+	Link,
 } from '@chakra-ui/react';
-import { Icon, padding, radius, shadow } from '../..';
+import { Align, Icon, padding, radius, shadow } from '../..';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 const P = { base: padding.CONTAINER.BASE, md: padding.CONTAINER.MD, lg: padding.CONTAINER.LG };
 
@@ -22,15 +25,17 @@ type SettingsEditContainerProps = {
 	children: ReactNode;
 	heading: string;
 	cols?: string;
+	subTitle?: string;
+	footerData?: { title: string; link?: string; href?: string };
 };
 
 const headingContainerProps: FlexProps = {
 	pt: P,
-	px: P,
+	px: { base: 4, md: 6 },
 	w: '100%',
-	alignItems: 'center',
+	// alignItems: 'center',
 	justifyContent: 'space-between',
-	gap: 2,
+	gap: 4,
 };
 
 const headingProps: HeadingProps = {
@@ -49,7 +54,7 @@ const containerProps: FlexProps = {
 		bg: 'container.newDark',
 		borderColor: 'container.borderDark',
 	},
-	borderRadius: radius.CONTAINER,
+	borderRadius: '8px',
 	borderWidth: 1,
 };
 
@@ -58,10 +63,12 @@ const SettingsEditContainer: FC<SettingsEditContainerProps> = ({
 	openEdit,
 	closeEdit,
 	handleSubmit,
+	subTitle,
 	isLoading,
 	children,
 	heading,
 	cols,
+	footerData,
 }) => {
 	const editState = editing ? (
 		<EditButtons
@@ -73,7 +80,7 @@ const SettingsEditContainer: FC<SettingsEditContainerProps> = ({
 	);
 
 	const bodyProps = {
-		px: P,
+		px: { base: 4, md: 6 },
 		pt: 6,
 		pb: 2,
 		row: 2,
@@ -84,15 +91,42 @@ const SettingsEditContainer: FC<SettingsEditContainerProps> = ({
 	return (
 		<Flex {...containerProps}>
 			{heading && (
-				<Flex {...headingContainerProps}>
+				<Flex
+					{...headingContainerProps}
+					flexDir={subTitle ? 'column' : 'row'}>
 					<Heading {...headingProps}>{heading}</Heading>
+					{subTitle && (
+						<Heading
+							maxW={{ base: 'full', md: '90%' }}
+							fontSize='.85rem'
+							color='gray.700'
+							fontWeight='300'>
+							{subTitle}
+						</Heading>
+					)}
 				</Flex>
 			)}
 			<form
 				onSubmit={handleSubmit}
 				style={{ width: '100%' }}>
 				<Grid {...bodyProps}>{children}</Grid>
-				<Footer>
+				<Footer justifyContent={footerData ? 'space-between' : 'flex-end'}>
+					{footerData && (
+						<Align gap={2}>
+							<Text fontSize='.85rem'>
+								{footerData?.title}{' '}
+								{footerData?.link && (
+									<Link
+										fontSize='.85rem'
+										color='dodgerblue'
+										href={footerData?.href}
+										isExternal>
+										{footerData?.link} <ExternalLinkIcon mx='2px' />
+									</Link>
+								)}
+							</Text>
+						</Align>
+					)}
 					<Fragment>{editState}</Fragment>
 				</Footer>
 			</form>
@@ -101,14 +135,17 @@ const SettingsEditContainer: FC<SettingsEditContainerProps> = ({
 };
 
 const footerProps: FlexProps = {
-	px: P,
+	px: { base: 4, md: 6 },
+
 	borderTopWidth: 1,
 	h: '52px',
 	_light: { bg: 'background.light', borderColor: 'container.borderLight' },
 	w: '100%',
 	alignItems: 'center',
+	bg: 'background.dark',
+
 	gap: 2,
-	borderBottomRadius: radius.CONTAINER,
+	borderBottomRadius: '8px',
 	justifyContent: 'flex-end',
 };
 

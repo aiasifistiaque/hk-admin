@@ -4,7 +4,7 @@ import { Flex } from '@chakra-ui/react';
 import { PosResultContainer, NoDataFound, useAppSelector, useGetAllQuery } from '../';
 
 import { PosCard } from '.';
-import PosCart from './PosCart';
+
 import PosCartDrawer from './PosDrawerCart';
 
 const PorductListPos = () => {

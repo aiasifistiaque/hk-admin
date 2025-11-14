@@ -33,6 +33,7 @@ const ViewProductContainer: FC<ViewContentContainerType> = ({
 					<EditContentModal
 						data={data}
 						path={path}
+						slug=''
 						dataModel={dataModel}>
 						<Button
 							colorScheme='gray'

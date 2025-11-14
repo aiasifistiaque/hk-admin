@@ -6,21 +6,24 @@ type ViewContentContainerType = FlexProps & {
 	children: ReactNode;
 	title?: string;
 	dataModel: any;
-	data: any;
+	data?: any;
 	edit?: boolean;
 	path?: string;
 	type?: 'basic' | 'content';
 	component?: boolean;
 	section?: boolean;
 	zIndex?: number;
+	slug?: string;
 };
 
 const HoverContentContainer: FC<ViewContentContainerType> = ({
 	title,
 	children,
+
 	dataModel,
 	data,
 	edit = true,
+	slug,
 	path,
 	component = false,
 	section = false,
@@ -51,7 +54,8 @@ const HoverContentContainer: FC<ViewContentContainerType> = ({
 					<EditContentModal
 						setHover={setHover}
 						setIsOpen={setIsOpen}
-						path={path}
+						path={path || ''}
+						slug={slug || ''}
 						data={data}
 						contentType={type}
 						dataModel={dataModel}>
@@ -61,6 +65,7 @@ const HoverContentContainer: FC<ViewContentContainerType> = ({
 							component={component}
 							zIndex={zIndex}>
 							<BuilderEditButton
+								zIndex={999}
 								section={section}
 								hover={hover}>
 								{section ? 'Edit Section' : 'Click to Edit'}

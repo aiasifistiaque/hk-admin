@@ -17,18 +17,18 @@ const PosSearch: FC<PosSearchProps> = ({ ...props }) => {
 
 	return (
 		<Align w='100%'>
-			<SideDrawer />
 			<InputGroup {...props}>
-				<InputLeftAddon
+				{/* <InputLeftAddon
+					borderRadius='sm'
 					bg='#ddd'
 					_dark={{ bg: 'background.dark' }}>
 					<Icon name='barcode' />
-				</InputLeftAddon>
+				</InputLeftAddon> */}
 				<Input
 					bg='white'
 					_dark={{ bg: 'sidebar.dark' }}
-					borderRadius='lg'
-					placeholder='Search By Barcode/Product Name'
+					borderRadius='sm'
+					placeholder='Search By Product Name'
 					value={value}
 					onChange={handleSearch}
 				/>

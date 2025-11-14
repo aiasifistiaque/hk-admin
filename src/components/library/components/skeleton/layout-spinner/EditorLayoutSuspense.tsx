@@ -49,6 +49,7 @@ const EditorLayoutSuspense: FC<LayoutSpinnerProps> = ({
 				title={title}>
 				<Flex
 					mx='auto'
+					w='100%'
 					maxW={display == 'lg' ? '100%' : '400px'}
 					{...(display == 'sm' && { boxShadow: '0 10px 20px rgba(0,0,0,.3)' })}
 					flexDir='column'

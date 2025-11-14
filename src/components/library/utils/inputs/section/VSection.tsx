@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 
 import { FormControl, Image, Stack, Flex, Text, Heading } from '@chakra-ui/react';
-import { HelperText, Label, ImageContainer, Column } from '../../..';
+import { HelperText, Label, ImageContainer, Column, LucideIcon } from '../../..';
 import AddSectionModal from './AddSectionModal';
 import DeleteSection from './DeleteSection';
 
@@ -16,6 +16,7 @@ type FormDataType = {
 	hasImage?: boolean;
 	limit?: number;
 	section?: any;
+	isLucideIcon?: boolean;
 };
 
 const VSection: FC<FormDataType> = ({
@@ -26,6 +27,7 @@ const VSection: FC<FormDataType> = ({
 	helper,
 	isDisabled = false,
 	name,
+	isLucideIcon,
 	hasImage,
 	limit = 999,
 	section,
@@ -38,6 +40,7 @@ const VSection: FC<FormDataType> = ({
 			<Image
 				h='100%'
 				w='100%'
+				alt={`image_${label}'}`}
 				objectFit='contain'
 				src={value}
 			/>
@@ -66,6 +69,12 @@ const VSection: FC<FormDataType> = ({
 									w='64px'
 								/>
 							)}
+							{isLucideIcon && (
+								<LucideIcon
+									name={item?.image}
+									size={64}
+								/>
+							)}
 							<Column
 								gap={4}
 								w='full'>
@@ -82,6 +91,7 @@ const VSection: FC<FormDataType> = ({
 											handleDataChange={onChange}
 											name={name}
 											index={i}
+											isLucideIcon={isLucideIcon}
 											prevVal={item}
 											hasImage={hasImage}
 											section={section}
@@ -107,6 +117,7 @@ const VSection: FC<FormDataType> = ({
 							type='add'
 							handleDataChange={onChange}
 							multiple={true}
+							isLucideIcon={isLucideIcon}
 							name={name}
 							hasImage={hasImage}
 							section={section}

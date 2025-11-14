@@ -10,12 +10,16 @@ type CountProps = {
 	filters?: any;
 	tooltip?: string;
 	href?: string;
+	onClick?: any;
 };
 
-const Count: FC<CountProps> = ({ title, path, filters = {}, tooltip, href }) => {
+const Count: FC<CountProps> = ({ title, path, filters = {}, tooltip, href, onClick }) => {
 	const { data, isFetching, isError } = useGetCountQuery({ path: path, filters }, { skip: !path });
 	return (
-		<StatContainer href={href}>
+		<StatContainer
+			cursor={onClick ? 'pointer' : 'default'}
+			href={href}
+			onClick={onClick}>
 			<Align>
 				<StatLabel>{title}</StatLabel>
 				{tooltip && (

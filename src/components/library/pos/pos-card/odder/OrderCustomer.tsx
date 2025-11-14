@@ -8,7 +8,7 @@ const OrderCustomer = ({ data }: { data: any }) => {
 			fontSize='.9rem'
 			fontWeight='500'>
 			<b>Customer:</b> {data?.name} {data?.email && `, Email: ${data?.email}`}
-			{data?.phone && `, Phone: ${data?.phone}`}
+			<strong>{data?.phone && `, Phone: ${data?.phone}`}</strong>
 		</Text>
 	);
 };

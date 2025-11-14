@@ -50,11 +50,6 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, children, path, icon, isLoadi
 	const isMobile = useIsMobile();
 	const isSelected = selected === path;
 
-	const iconColor = useColorModeValue(
-		isSelected ? 'sidebar.bodyText.selectedLight' : 'sidebar.bodyText.light',
-		isSelected ? 'sidebar.bodyText.selectedDark' : 'sidebar.bodyText.dark'
-	);
-
 	return (
 		<Grid
 			onClick={changeRoute}

@@ -7,3 +7,4 @@ export {
 export { default as StaticPage } from './container/StaticPage';
 
 export { default as NoDataContainer } from './container/NoDataContainer';
+export { default as ContentManager } from './container/ContentManager';

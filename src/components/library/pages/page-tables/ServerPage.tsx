@@ -14,13 +14,15 @@ import { setFields, setPreferences } from '../../store/slices/tableSlice';
 import { useGetAllQuery, useGetConfigQuery, useGetSelfQuery, useGetRouteQuery } from '../../store';
 import Column from '../../containers/Column';
 import ServerPageHeading from '../../components/table/ServerPageHeading';
+import { Flex } from '@chakra-ui/react';
 
 type TableProps = {
 	route: string;
+	children?: React.ReactNode;
 };
 
 // Define the PageTable component
-const ServerPage: FC<TableProps> = ({ route }) => {
+const ServerPage: FC<TableProps> = ({ route, children }) => {
 	const { page, limit, search, sort, filters, preferences, selectedItems }: any = useAppSelector(
 		(state: any) => state.table
 	);
@@ -56,7 +58,10 @@ const ServerPage: FC<TableProps> = ({ route }) => {
 			filters: table?.preFilters ?? (tableFilters ? filters : null),
 			path: route,
 		},
-		{ skip: !table }
+		{
+			skip: !table,
+			pollingInterval: 10000, // Poll every 10 seconds (set your desired interval in ms)
+		}
 	);
 
 	const { data: userData } = useGetSelfQuery({});
@@ -125,7 +130,7 @@ const ServerPage: FC<TableProps> = ({ route }) => {
 						path={table?.path} //Path of the table
 						export={table?.export} //If export button should be displayed
 					/>
-					{/* <Flex>{children}</Flex> */}
+					<Flex>{children}</Flex>
 
 					<CustomTable
 						schema={schema} //Schema of the table

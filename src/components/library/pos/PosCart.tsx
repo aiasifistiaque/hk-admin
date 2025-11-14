@@ -5,14 +5,15 @@ import { useEffect, useState } from 'react';
 import {
 	useAppDispatch,
 	useAppSelector,
-	calculateCartTotals,
-	deleteAllFromCart,
-	updateUser,
 	Column,
 	EmptyCartModal,
 	SpaceBetween,
 	IconButton,
 	useGetCartTotalMutation,
+	deleteAllFromVariantCart,
+	calculateVariantCartTotals,
+	updateVariantCartUser,
+	InputData,
 } from '../';
 
 import EditablePriceItem from './pos-card/EditablePriceItem';
@@ -24,6 +25,37 @@ import AddressWidget from './pos-card/AddressWidget';
 import CartPriceContainer from './CartPriceContainer';
 
 import { CartContainer } from '.';
+import VariantCartItem from './pos-card/CartItem/VatiantCartItem';
+
+const dataFields: InputData<any>[] = [
+	{
+		sectionTitle: 'Customer Info',
+		name: 'name',
+		label: 'Full Name',
+		isRequired: true,
+		type: 'text',
+	},
+
+	{
+		name: 'email',
+		label: 'Email',
+		// isRequired: true,
+		type: 'text',
+		span: 1,
+	},
+	{
+		name: 'phone',
+		label: 'Phone Number',
+		type: 'text',
+		isRequired: true,
+		span: 1,
+	},
+	{
+		name: 'address',
+		label: 'Address',
+		type: 'textarea',
+	},
+];
 
 const PosCart = () => {
 	const dispatch: any = useAppDispatch();
@@ -31,12 +63,12 @@ const PosCart = () => {
 	const { isLoading, isSuccess, isError, error, data } = result;
 
 	const { cartItems, subTotal, vat, discount, shipping, user, total }: any = useAppSelector(
-		(state: any) => state.cart
+		(state: any) => state.variantCart
 	);
 
 	const [val, setVal] = useState<{ discount: number; shipping: number }>({
-		discount: shipping,
-		shipping: discount,
+		discount: Number(shipping),
+		shipping: Number(discount),
 	});
 
 	const handleChange = (e: any) => {
@@ -48,7 +80,7 @@ const PosCart = () => {
 		}
 	};
 	const handleResetCart = () => {
-		dispatch(deleteAllFromCart());
+		dispatch(deleteAllFromVariantCart());
 		trigger({ items: [] });
 	};
 
@@ -58,18 +90,18 @@ const PosCart = () => {
 
 	useEffect(() => {
 		if (!isLoading && isSuccess) {
-			dispatch(calculateCartTotals(result?.data));
+			dispatch(calculateVariantCartTotals(result?.data));
 		}
 	}, [result]);
 
 	const selectCustomer = (
 		<PosSelect
 			insert={true}
-			// dataModel={createCustomer}
+			dataModel={dataFields}
 			path='customers'
 			value={user}
-			setValue={(e: string) => dispatch(updateUser(e))}
-			defaultValue={{ _id: 'guest', name: 'Walk in Customer' }}
+			setValue={(e: string) => dispatch(updateVariantCartUser(e))}
+			defaultValue={{ _id: undefined, name: 'Walk in Customer' }}
 		/>
 	);
 
@@ -79,9 +111,12 @@ const PosCart = () => {
 			title='Empty Cart'
 			trigger={
 				<IconButton
+					size='sm'
+					borderRadius='sm'
 					tooltip='Empty Cart'
 					aria-label='Empty Cart'
 					colorScheme='red'
+					variant='outline'
 					iconName='delete'
 					iconSize={18}
 				/>
@@ -100,7 +135,7 @@ const PosCart = () => {
 			</Column>
 			<CartContainer>
 				{cartItems?.map((item: any) => (
-					<CartItem
+					<VariantCartItem
 						key={item?.id}
 						item={item}
 					/>

@@ -10,11 +10,13 @@ import {
 	TextareaProps,
 	useColorModeValue,
 	Image,
+	GridItem,
 } from '@chakra-ui/react';
 import UpdatePasswordModal from '../modals/update-password/UpdatePasswordModal';
 import { VImage } from '../utils/inputs';
 import { PLACEHOLDER_IMAGE } from '../config';
 import { CreateModal } from '../modals';
+import { HelperText } from '../form';
 
 type DetailProps = InputProps &
 	TextareaProps &
@@ -90,11 +92,10 @@ const Details: FC<DetailProps> = ({
 		</Box>
 	);
 
-	const inputTextColor = useColorModeValue('text.500', 'gray.300');
-
 	const styleProps = {
 		borderRadius: 'lg',
-		color: inputTextColor,
+		color: 'text.500',
+		_dark: { color: '#ebebeb', bg: 'background.dark' },
 		size: 'sm',
 		w: { base: '100%', md: '400px' },
 	};
@@ -124,8 +125,15 @@ const Details: FC<DetailProps> = ({
 			gridTemplateColumns={{ base: '1fr 2fr', md: '1fr 3fr' }}
 			w='100%'
 			pb={3}
-			// h='50px'
-		>
+			borderBottomWidth={1}
+			py={4}
+			_last={{
+				borderBottomWidth: 0,
+			}}
+			borderColor='container.borderLight'
+			_dark={{
+				borderColor: 'container.borderDark',
+			}}>
 			<Text
 				py={1}
 				fontWeight='600'
@@ -133,6 +141,17 @@ const Details: FC<DetailProps> = ({
 				{title}
 			</Text>
 			{isPassword ? passwordBox : type == 'modal' ? modalBox : editing ? inputBox : textBox}
+			{props?.helper && (
+				<GridItem
+					colSpan={{ base: 2, md: 2 }}
+					mt={4}>
+					<Text
+						fontSize='.75rem'
+						fontStyle='italic'>
+						{props?.helper}
+					</Text>
+				</GridItem>
+			)}
 		</Grid>
 	);
 };

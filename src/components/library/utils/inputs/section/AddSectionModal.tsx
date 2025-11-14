@@ -32,6 +32,7 @@ type UploadModalProps = {
 	dataModel?: any;
 	hasImage?: boolean;
 	section?: any;
+	isLucideIcon?: boolean;
 };
 
 const AddSectionModal: FC<UploadModalProps> = ({
@@ -40,6 +41,7 @@ const AddSectionModal: FC<UploadModalProps> = ({
 	handleDataChange,
 	handleDelete,
 	type = 'add',
+	isLucideIcon,
 	value,
 	name,
 	prevVal,
@@ -188,6 +190,15 @@ const AddSectionModal: FC<UploadModalProps> = ({
 									label='Image'
 									value={val?.image}
 									onChange={handleImage}
+								/>
+							)}
+							{isLucideIcon && (
+								<VInput
+									name='image'
+									label='Image (Icon) Name'
+									value={val?.image}
+									onChange={handleChange}
+									helper='Use icon names from Lucide Icons library: https://lucide.dev/icons/'
 								/>
 							)}
 							<VInput

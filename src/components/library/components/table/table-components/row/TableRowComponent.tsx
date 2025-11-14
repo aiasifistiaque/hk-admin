@@ -1,27 +1,13 @@
 import { FC, Fragment } from 'react';
 
 import { format } from 'date-fns';
-import {
-	GridItem,
-	Heading,
-	StackProps,
-	TableRowProps,
-	useClipboard,
-	Flex,
-	Tooltip,
-	Icon,
-} from '@chakra-ui/react';
-import {
-	useIsMobile,
-	formatDataKey,
-	TableRow,
-	Column,
-	EditableTableData,
-	TableData,
-	TableMenu,
-	formatFieldTitle,
-} from '../../../..';
-import { CopyIcon } from '@chakra-ui/icons';
+import { GridItem, Heading, StackProps, TableRowProps, Flex } from '@chakra-ui/react';
+import { TableRow, EditableTableData, TableData, TableMenu } from '../../../..';
+
+import { useIsMobile } from '../../../../hooks';
+
+import { formatDataKey, formatFieldTitle } from '../../../../functions';
+import { Column } from '../../../../containers';
 
 type TableProps = StackProps &
 	TableRowProps & {
@@ -32,6 +18,7 @@ type TableProps = StackProps &
 		fields?: string[] | [];
 		selectable?: boolean;
 		clickable?: boolean;
+		colorScheme?: any;
 	};
 
 const TableRowComponent: FC<TableProps> = ({
@@ -42,6 +29,7 @@ const TableRowComponent: FC<TableProps> = ({
 	fields = [],
 	clickable,
 	selectable,
+	colorScheme,
 	...props
 }) => {
 	const isMobile = useIsMobile();
@@ -49,6 +37,7 @@ const TableRowComponent: FC<TableProps> = ({
 	return (
 		// Create a TableRow for each item
 		<TableRow
+			{...(colorScheme && { bg: colorScheme(item?.status) })}
 			cursor={clickable ? 'pointer' : 'default'}
 			selectable={selectable}
 			id={item?._id}
@@ -57,6 +46,7 @@ const TableRowComponent: FC<TableProps> = ({
 			{...props}>
 			{/* If the table is selectable, return a TableData cell with a checkbox */}
 			{/* Map over the data keys and create a TableData cell for each */}
+			{/* <p>{colorScheme(item?.status)}</p> */}
 			{data?.map((val: any) => {
 				const {
 					dataKey,
@@ -88,7 +78,6 @@ const TableRowComponent: FC<TableProps> = ({
 					else
 						return (
 							<TableMenu
-								item={item}
 								path={path}
 								data={menu}
 								id={item?._id}

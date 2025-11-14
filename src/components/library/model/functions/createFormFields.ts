@@ -65,6 +65,9 @@ const createFormFields = ({ schema, layout, type = 'post' }: CreateType): any[] 
 							...(fieldConfig?.style && { style: fieldConfig.style }),
 							...(fieldConfig?.renderIf && { renderIf: fieldConfig.renderIf }),
 							...(fieldConfig.folder && { folder: fieldConfig.folder }),
+							...(fieldConfig.labelKey && { labelKey: fieldConfig.labelKey }),
+							...(fieldConfig.valKey && { valKey: fieldConfig.valKey }),
+							...(fieldConfig.sortBy && { sortBy: fieldConfig.sortBy }),
 						});
 					}
 				});
@@ -101,6 +104,9 @@ const createFormFields = ({ schema, layout, type = 'post' }: CreateType): any[] 
 						...(fieldConfig?.style && { style: fieldConfig.style }),
 						...(fieldConfig?.renderIf && { renderIf: fieldConfig.renderIf }),
 						...(fieldConfig.folder && { folder: fieldConfig.folder }),
+						...(fieldConfig.labelKey && { labelKey: fieldConfig.labelKey }),
+						...(fieldConfig.valKey && { valKey: fieldConfig.valKey }),
+						...(fieldConfig.sortBy && { sortBy: fieldConfig.sortBy }),
 
 						endOfSection: lastElement,
 					});
