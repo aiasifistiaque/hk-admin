@@ -70,6 +70,19 @@ const VSectionDataArray: FC<FormDataType> = ({
 								w='full'>
 								<SpaceBetween>
 									<Heading size='md'>{item?.[section?.display?.title]}</Heading>
+									{section?.dataModel && (
+										<Column gap={2}>
+											{section?.dataModel?.map((field: any, idx: number) => (
+												<Text
+													key={idx}
+													fontSize='14px'
+													color='text.500'
+													_dark={{ color: 'gray.400' }}>
+													<strong>{field?.label}:</strong> {item?.[field?.name]}
+												</Text>
+											))}
+										</Column>
+									)}
 									<Flex gap={1}>
 										<AddSectionDataModal
 											value={value}
