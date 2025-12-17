@@ -3,7 +3,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useGetSelfQuery } from '../../';
+import { JsonView, useGetSelfQuery } from '../../';
 
 import {
 	TableObjectProps,
@@ -22,10 +22,11 @@ type TableProps = {
 	table: TableObjectProps;
 	isModal?: boolean;
 	inputFields?: any;
+	debug?: boolean;
 };
 
 // Define the PageTable component
-const TableCustom: FC<TableProps> = ({ table, inputFields }) => {
+const TableCustom: FC<TableProps> = ({ table, inputFields, debug }) => {
 	const { page, limit, search, sort, filters, fields, preferences, selectedItems }: any =
 		useAppSelector((state: any) => state.table);
 	const dispatch = useAppDispatch();
@@ -93,6 +94,7 @@ const TableCustom: FC<TableProps> = ({ table, inputFields }) => {
 
 	return (
 		<>
+			{debug && <JsonView data={data} />}
 			<CustomTable
 				schema={table?.data}
 				search={table?.search}

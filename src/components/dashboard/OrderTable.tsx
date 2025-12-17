@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableObjectProps } from '@/components/library';
+import { JsonView, TableObjectProps } from '@/components/library';
 import { viewAllDataFields } from '@/models/order';
 import TableCustom from '../library/sections/table/TableCustom';
 
@@ -14,7 +14,7 @@ const viewAll: TableObjectProps = {
 	filters: false,
 	pagination: false,
 	limit: 5,
-	preferences: ['customer.name', 'totalItems', 'status', 'total', 'dueAmount', 'profit'],
+	preferences: ['invoice', 'customer.name', 'status', 'orderDate', 'total', 'totalItems'],
 	// select: {
 	// 	show: true,
 	// 	menu: multiSelectMenu,
@@ -31,7 +31,14 @@ const viewAll: TableObjectProps = {
 };
 
 const OrderTable = () => {
-	return <TableCustom table={viewAll} />;
+	return (
+		<>
+			<TableCustom
+				// debug
+				table={viewAll}
+			/>
+		</>
+	);
 };
 
 export default OrderTable;

@@ -9,13 +9,13 @@ const nextConfig = {
 	},
 	reactStrictMode: false,
 	turbopack: {
-		root: '/Users/asifistiaque/Desktop/proj/bazarey/bazary-admin',
-		rules: {
-			'*.svg': {
-				loaders: ['@svgr/webpack'],
-				as: '*.js',
-			},
-		},
+		// root: '/Users/asifistiaque/Desktop/proj/bazarey/bazary-admin',
+		// rules: {
+		// 	'*.svg': {
+		// 		loaders: ['@svgr/webpack'],
+		// 		as: '*.js',
+		// 	},
+		// },
 	},
 
 	webpack: (config, { webpack }) => {
