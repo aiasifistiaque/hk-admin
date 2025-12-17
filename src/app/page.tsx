@@ -62,13 +62,28 @@ export default function UserFeedback() {
 	};
 
 	return (
-		<Layout title='Dashboard' path='dashboard'>
+		<Layout
+			title='Dashboard'
+			path='dashboard'>
 			<Grid
 				pt={3}
 				gridTemplateColumns={{ base: '1fr', md: '1fr 1fr 1fr' }}
-				gap={2}
-			>
-				<Count href='/views' title='Website views' path='views' />
+				gap={2}>
+				<Count
+					href='/products'
+					title='Products'
+					path='products'
+				/>
+				<Count
+					href='/brands'
+					title='Brands'
+					path='brands'
+				/>
+				<Count
+					href='/categorys'
+					title='Categories'
+					path='categorys'
+				/>
 			</Grid>
 		</Layout>
 	);
