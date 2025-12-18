@@ -1,7 +1,7 @@
 // import { URL } from '../..';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const URL = process.env.NEXT_PUBLIC_BACKEND || 'http://localhost:3000';
+const URL = process.env.NEXT_PUBLIC_BACKEND || 'http://localhost:5000';
 
 const tags = [
 	'donors',
@@ -21,6 +21,8 @@ const tags = [
 	'self',
 	'config',
 	'uploads',
+	'chats',
+	'messages',
 ];
 
 export const mainApi = createApi({
