@@ -59,7 +59,7 @@ import {
 	FlexProps,
 	Badge,
 } from '@chakra-ui/react';
-import { HeadingProps, getInvoiceTotal, AddressSection } from '../../../orders/add/_components';
+import { HeadingProps, getInvoiceTotal, AddressSection } from '../../../sales/add/_components';
 import { useParams } from 'next/navigation';
 // import QcMain from '@/components/new/QcMain';
 import FormSection from './_components/FormSection';

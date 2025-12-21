@@ -106,11 +106,11 @@ const OrderDetailPage = () => {
 					<QcMain phone={data?.address?.phone} />
 				</Section> */}
 				{/* <Section heading='Delivery Details'> */}
-				<OrderDelivery
+				{/* <OrderDelivery
 					id={data?.delivery}
 					order={id}
 					orderData={data}
-				/>
+				/> */}
 				{/* </Section> */}
 				<Section
 					mb={2}

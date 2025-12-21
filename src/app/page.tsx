@@ -10,6 +10,7 @@ import {
 	ShowSum,
 	useGetSumQuery,
 	FlexChild,
+	Sum,
 } from '@/components/library';
 import { Column, DashContainer, SpaceBetween } from '@/components/library';
 
@@ -74,37 +75,40 @@ export default function UserFeedback() {
 				pt={3}
 				gridTemplateColumns={{ base: '1fr', md: '1fr 1fr 1fr' }}
 				gap={2}>
-				<Count
-					href='/products'
-					title='Products'
-					path='products'
+				<Sum
+					title='Cash Balance'
+					path='assets'
+					field='openingBalance'
+					filters={{
+						category: 'cash',
+					}}
 				/>
-				<Count
-					href='/brands'
-					title='Brands'
-					path='brands'
+				<Sum
+					title='Bank Balance'
+					path='assets'
+					field='openingBalance'
+					filters={{
+						category: 'bank',
+					}}
 				/>
-				<Count
-					href='/categorys'
-					title='Categories'
-					path='categorys'
+				<Sum
+					title='MFS Balance'
+					path='assets'
+					field='openingBalance'
+					filters={{
+						category_in: 'mfs',
+					}}
+				/>
+				<Sum
+					title='Expense'
+					path='expenses'
+					field='openingBalance'
+					filters={{
+						type: 'expense',
+					}}
 				/>
 			</Grid>
-			<Col
-				gap={2}
-				pb={2}>
-				<DashContainer pt={4}>
-					<SpaceBetween
-						align='center'
-						px={4}>
-						<Heading size='sm'>Recent Orders</Heading>
-						<Link href='/orders'>
-							<Button size='xs'>View Orders</Button>
-						</Link>
-					</SpaceBetween>
-					<OrderTable />
-				</DashContainer>
-			</Col>
+
 			{/* <Column gap={2}>
 				<DashContainer pt={4}>
 					<SpaceBetween

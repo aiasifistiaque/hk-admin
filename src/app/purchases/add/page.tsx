@@ -34,6 +34,7 @@ type FormType = {
 	customer: string;
 	discount: number;
 	paymentMethod: string;
+	warehouse: string;
 };
 
 const CreatePurchase = ({ params }: any) => {
@@ -45,6 +46,7 @@ const CreatePurchase = ({ params }: any) => {
 		paidAmount: 0,
 		date: new Date().toISOString(),
 		customer: '',
+		warehouse: '',
 		paymentMethod: 'COD',
 		discount: 0,
 	});
@@ -102,18 +104,18 @@ const CreatePurchase = ({ params }: any) => {
 
 	useCustomToast({
 		...result,
-		successText: 'Invoice Created successfully',
+		successText: 'Purchase Created successfully',
 	});
 
 	useRedirect({
 		isSuccess: result?.isSuccess,
-		path: `/orders/${result?.data?._id}`,
+		path: `/purchases/${result?.data?.doc?._id}`,
 		isLoading: result?.isLoading,
 	});
 
 	const { data, isFetching, isSuccess } = useGetByIdQuery(
 		{
-			path: 'customers',
+			path: 'suppliers',
 			id: formData?.customer,
 		},
 		{
@@ -146,18 +148,28 @@ const CreatePurchase = ({ params }: any) => {
 			return;
 		}
 
+		const createBody = {
+			address: address?.address,
+			supplier: formData?.customer,
+			total: invoice?.total,
+			subTotal: invoice?.subTotal,
+			account: formData?.paymentMethod,
+			paidAmount: Number(formData?.paidAmount),
+			// origin: 'invoice',
+			shippingCharge: Number(invoice?.shipping || 0),
+			discount: Number(invoice?.discount || 0),
+			dueAmount: invoice?.total - Number(formData?.paidAmount || 0),
+			items: invoice?.items,
+			orderDate: formData?.date,
+			warehouse: formData?.warehouse,
+		};
+
+		console.log('Create Invoice Body:', createBody);
+
 		trigger({
-			invalidate: ['orders', 'products'],
-			path: 'orders',
-			body: {
-				cart: invoice,
-				address: address,
-				customer: formData?.customer,
-				paymentAmount: formData?.paidAmount,
-				paymentMethod: formData?.paymentMethod,
-				paidAmount: formData?.paidAmount,
-				origin: 'invoice',
-			},
+			invalidate: ['purchases', 'products', 'items'],
+			path: 'purchases',
+			body: createBody,
 		});
 	};
 
@@ -194,8 +206,8 @@ const CreatePurchase = ({ params }: any) => {
 		<form onSubmit={handleSubmit}>
 			<CreateNav
 				isLoading={result?.isLoading}
-				title='Invoice'
-				path='orders'
+				title='Purchase Invoice'
+				path='purchases'
 			/>
 			<CreateBody
 				justify='flex-start'
@@ -215,12 +227,12 @@ const CreatePurchase = ({ params }: any) => {
 					{/* <QcMain phone={address?.phone} /> */}
 
 					<MintTableContainer>{table}</MintTableContainer>
-					<Section>
+					{/* <Section>
 						<AddressSection
 							address={address}
 							handleAddress={handleAddress}
 						/>
-					</Section>
+					</Section> */}
 				</Column>
 			</CreateBody>
 		</form>

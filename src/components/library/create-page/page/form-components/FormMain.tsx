@@ -11,6 +11,7 @@ import {
 	handleNestedString,
 	FormDivisionAccordion,
 	FormItemAccordion,
+	JsonView,
 } from '../../..';
 import { Accordion, Text } from '@chakra-ui/react';
 
@@ -162,6 +163,7 @@ const FormMain: FC<FormMainType> = ({
 							}
 							item={item}
 							key={i}>
+							{/* <JsonView data={item} /> */}
 							<>
 								<FormInput
 									formData={formData}

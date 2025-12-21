@@ -41,7 +41,7 @@ const Sum: FC<CountProps> = ({ title, path, field, price, tooltip, href, filters
 						? '--'
 						: price
 						? `${currency.symbol}${data?.total.toLocaleString()}`
-						: data?.total}
+						: data?.total?.toLocaleString()}
 				</StatNumber>
 			</Skeleton>
 		</StatContainer>
