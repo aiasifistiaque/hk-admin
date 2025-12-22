@@ -112,16 +112,16 @@ const schema = {
 		default: true,
 	},
 	status: {
-		label: 'Delivery Status',
+		label: 'Order Status',
 		type: 'text',
-		tableType: 'tag',
-		colorScheme: (status: string) => {
-			if (status == 'pending') return 'blue';
-			else if (status == 'completed') return 'green';
-			else if (status == 'cancelled') return 'red';
-			else if (status == 'order-placed') return 'purple';
-			else return 'purple';
-		},
+		tableType: 'string',
+		// colorScheme: (status: string) => {
+		// 	if (status == 'pending') return 'blue';
+		// 	else if (status == 'completed') return 'green';
+		// 	else if (status == 'cancelled') return 'red';
+		// 	else if (status == 'order-placed') return 'purple';
+		// 	else return 'purple';
+		// },
 		displayInTable: true,
 		default: true,
 	},

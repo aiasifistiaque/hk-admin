@@ -14,6 +14,8 @@ import {
 	FormControl,
 	Scroll,
 	CreateServerModal,
+	JsonView,
+	JSONDisplay,
 } from '../../..';
 
 import { VDataMenuProps } from './types';
@@ -50,12 +52,16 @@ const VDataMenu: FC<VDataMenuProps> = ({
 	const { data, isFetching, isError, error, isSuccess } = useGetAllQuery({
 		path: model,
 		limit: '999',
-		sort: 'name',
+		sort: item?.sorting || 'name',
 		search,
 	});
 
 	const handleSearch = (e: any) => {
 		setSearch(e.target.value);
+	};
+
+	const getNestedValue = (obj: any, path: string) => {
+		return path.split('.').reduce((acc, part) => acc?.[part], obj);
 	};
 
 	const handleChange = (e: any) => {
@@ -78,7 +84,7 @@ const VDataMenu: FC<VDataMenuProps> = ({
 			id={item?._id}
 			key={i}
 			onClick={() => handleChange(item)}>
-			{item?.[menuKey]} {menuAddOnKey && `(${item?.[menuAddOnKey]})`}
+			{getNestedValue(item, menuKey)} {menuAddOnKey && `(${getNestedValue(item, menuAddOnKey)})`}
 		</ItemOfDataMenu>
 	));
 
@@ -99,6 +105,7 @@ const VDataMenu: FC<VDataMenuProps> = ({
 
 	return (
 		<Flex w='full'>
+			{/* <JsonView data={item} /> */}
 			{dataModel && (
 				<CreateModal
 					data={dataModel}
