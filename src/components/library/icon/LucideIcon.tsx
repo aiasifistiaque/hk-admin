@@ -13,6 +13,11 @@ type IconProps = {
 const LucideIcon: FC<IconProps> = ({ name, ...props }) => {
 	const defaultColor = useColorModeValue('#4a4a4a', 'white');
 
+	// Return null if no icon name is provided
+	if (!name) {
+		return null;
+	}
+
 	return (
 		<DynamicIcon
 			name={name as any}
