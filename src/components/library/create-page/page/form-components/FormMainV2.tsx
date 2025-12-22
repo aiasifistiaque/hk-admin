@@ -1,0 +1,141 @@
+import { FC, useMemo } from 'react';
+import {
+	FormDivision,
+	FormInput,
+	getFieldValue,
+	handleChange,
+	handleImage,
+	handleSwitch,
+	handleImageArray,
+	handleNestedImage,
+	handleNestedString,
+	FormDivisionAccordion,
+	FormItemAccordion,
+	JsonView,
+} from '../../..';
+import { Accordion, Text } from '@chakra-ui/react';
+
+type FormMainType = {
+	fields: any;
+	formData: any;
+	setFormData: any;
+	setChangedData: any;
+	isModal?: boolean;
+	readonlyFields?: string[];
+};
+
+const FormMainV2: FC<FormMainType> = ({
+	fields,
+	formData,
+	setFormData,
+	setChangedData,
+	isModal = false,
+	readonlyFields = [],
+}) => {
+	const sections = useMemo(() => {
+		let section: any[] = [];
+		let sections: any[][] = [];
+
+		if (!fields || !Array.isArray(fields)) return [];
+
+		fields.forEach((field: any, i: number) => {
+			section.push(field);
+			if (field.endOfSection || i === fields.length - 1) {
+				sections.push(section);
+				section = [];
+			}
+		});
+
+		return sections;
+	}, [fields]);
+
+	const getOnChangeHandler = (type: string, key?: string) => {
+		const params = { formData, setFormData, setChangedData };
+
+		switch (type) {
+			case 'image':
+				return (e: any) => handleImage({ e, dataKey: key || 'image', ...params });
+			case 'icon':
+				return (e: any) => handleImage({ e, dataKey: key || 'icon', ...params });
+			case 'switch':
+			case 'image-array':
+				return (e: any, type?: string) =>
+					handleImageArray({ e, dataKey: key || 'image', type, ...params });
+			case 'checkbox':
+				return (e: any) => handleSwitch({ e, ...params });
+			case 'nested-image':
+				return (e: any) => handleNestedImage({ e, dataKey: key || 'image', ...params });
+			case 'nested-string':
+				return (e: any) => handleNestedString({ e, ...params });
+			case 'nested-select':
+				return (e: any) => handleNestedString({ e, ...params });
+			case 'nested-data-menu':
+				return (e: any) => handleNestedString({ e, ...params });
+			case 'video':
+				return (e: any) => handleImage({ e, dataKey: key || 'image', ...params });
+
+			default:
+				return (e: any) => handleChange({ e, ...params });
+		}
+	};
+
+	const evaluateCondition = (item: any, formData: any) => {
+		const condition = item?.renderIf;
+		if (!condition) return false;
+		const { field, operator, value } = condition;
+		switch (operator) {
+			case 'eq':
+				return formData[field] !== value;
+			default:
+				return true;
+		}
+	};
+
+	return (
+		<Accordion
+			gap={4}
+			allowToggle
+			defaultIndex={[0, ...Array.from({ length: sections.length - 1 }, (_, i) => i + 1)]}
+			allowMultiple>
+			{sections.map((section: any, i: number) => (
+				<FormDivisionAccordion
+					title={section?.[0]?.sectionTitle || 'Section Title'}
+					key={i}
+					isModal={isModal}>
+					{section?.map((item: any, i: number) => (
+						<FormItemAccordion
+							collapsible={true}
+							isHidden={
+								evaluateCondition(item, formData) ||
+								(item?.renderCondition && !item?.renderCondition(formData))
+							}
+							item={item}
+							key={i}>
+							{/* <JsonView data={item} /> */}
+							<>
+								<FormInput
+									formData={formData}
+									setFormData={setFormData}
+									setChangedData={setChangedData}
+									isRequired={item?.isRequired || false}
+									name={item?.name}
+									label={item?.label}
+									type={readonlyFields?.includes(item?.name) ? 'read-only' : item?.type}
+									value={getFieldValue({ name: item?.name, formData })}
+									onChange={getOnChangeHandler(item?.type, item?.name)}
+									model={item?.model}
+									placeholder={item?.placeholder}
+									options={item?.options}
+									dataModel={item?.dataModel}
+									item={item}
+								/>
+							</>
+						</FormItemAccordion>
+					))}
+				</FormDivisionAccordion>
+			))}
+		</Accordion>
+	);
+};
+
+export default FormMainV2;

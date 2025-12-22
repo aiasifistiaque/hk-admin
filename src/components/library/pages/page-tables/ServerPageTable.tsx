@@ -11,7 +11,7 @@ import Toast from '../../components/toast/Toast';
 import Headers from '../../components/table/table-components/header/Headers';
 import TableRowComponent from '../../components/table/table-components/row/TableRowComponent';
 import { setFields, setPreferences } from '../../store/slices/tableSlice';
-import { useGetAllQuery, useGetConfigQuery, useGetSelfQuery, useGetRouteQuery } from '../../store';
+import { useGetAllQuery, useGetConfigQuery, useGetSelfQuery } from '../../store';
 import Column from '../../containers/Column';
 import ServerPageHeading from '../../components/table/ServerPageHeading';
 import { Flex } from '@chakra-ui/react';
