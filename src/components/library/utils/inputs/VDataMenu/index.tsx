@@ -50,7 +50,7 @@ const VDataMenu: FC<VDataMenuProps> = ({
 	const [search, setSearch] = useState<string>('');
 
 	const { data, isFetching, isError, error, isSuccess } = useGetAllQuery({
-		path: model,
+		path: model || '',
 		limit: '999',
 		sort: item?.sorting || 'name',
 		search,

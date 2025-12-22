@@ -18,7 +18,7 @@ import { CopyIcon } from '@chakra-ui/icons';
 type TableDataPropsType = TableCellProps &
 	TableObjectDataProps & {
 		children: any;
-		key: string;
+		dKey: string;
 		colorScheme?: any;
 		item?: any;
 		copy?: boolean;
@@ -34,7 +34,7 @@ const TableData: FC<TableDataPropsType> = ({
 	toLocaleStr,
 	tagType,
 	imageKey,
-	key,
+	dKey,
 	item,
 	...props
 }) => {
@@ -42,7 +42,7 @@ const TableData: FC<TableDataPropsType> = ({
 	const commonProps = {
 		toLocaleStr,
 		colorScheme,
-		key,
+		dKey,
 		type,
 		tagType,
 		imageKey,
@@ -82,7 +82,7 @@ const TableBody: FC<TableDataPropsType> = ({
 	toLocaleStr,
 	tagType,
 	imageKey,
-	key,
+	dKey,
 	item,
 	colorTheme,
 	...props
