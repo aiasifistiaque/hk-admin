@@ -21,6 +21,10 @@ import {
 import { VDataMenuProps } from './types';
 import { hiddenInputCss, searchInputCss, unselectTextCss, MAX_H, WIDTH } from './styles';
 
+const getNestedValue = (obj: any, path: string) => {
+	return path.split('.').reduce((acc, part) => acc?.[part], obj);
+};
+
 const VDataMenu: FC<VDataMenuProps> = ({
 	label,
 	item,
@@ -58,10 +62,6 @@ const VDataMenu: FC<VDataMenuProps> = ({
 
 	const handleSearch = (e: any) => {
 		setSearch(e.target.value);
-	};
-
-	const getNestedValue = (obj: any, path: string) => {
-		return path.split('.').reduce((acc, part) => acc?.[part], obj);
 	};
 
 	const handleChange = (e: any) => {
