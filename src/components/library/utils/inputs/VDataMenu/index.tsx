@@ -78,16 +78,6 @@ const VDataMenu: FC<VDataMenuProps> = ({
 		onClose();
 	};
 
-	const renderMenuItems = data?.doc?.map((item: any, i: number) => (
-		<ItemOfDataMenu
-			cursor='pointer'
-			id={item?._id}
-			key={i}
-			onClick={() => handleChange(item)}>
-			{getNestedValue(item, menuKey)} {menuAddOnKey && `(${getNestedValue(item, menuAddOnKey)})`}
-		</ItemOfDataMenu>
-	));
-
 	const getNameById = (id: string | undefined) => {
 		const item = data?.doc?.find((item: any) => item._id === id);
 		return item?.name || id;
@@ -102,6 +92,17 @@ const VDataMenu: FC<VDataMenuProps> = ({
 			if (inputRef.current) inputRef.current.focus();
 		}
 	}, [isOpen, onOpen, onClose]);
+
+	const renderMenuItems = data?.doc?.map((item: any, i: number) => (
+		<ItemOfDataMenu
+			cursor='pointer'
+			id={item?._id}
+			key={i}
+			onClick={() => handleChange(item)}>
+			{getNestedValue(item, menuKey)}
+			{/* {menuAddOnKey && `(${getNestedValue(item, menuAddOnKey)})`} */}
+		</ItemOfDataMenu>
+	));
 
 	return (
 		<Flex w='full'>

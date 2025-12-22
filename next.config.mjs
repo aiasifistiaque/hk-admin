@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	experimental: {
+		turbo: false,
+	},
 	typescript: {
 		// !! WARN !!
 		// Dangerously allow production builds to successfully complete even if
@@ -8,15 +11,6 @@ const nextConfig = {
 		ignoreBuildErrors: true,
 	},
 	reactStrictMode: false,
-	turbopack: {
-		// root: '/Users/asifistiaque/Desktop/proj/bazarey/bazary-admin',
-		// rules: {
-		// 	'*.svg': {
-		// 		loaders: ['@svgr/webpack'],
-		// 		as: '*.js',
-		// 	},
-		// },
-	},
 
 	webpack: (config, { webpack }) => {
 		config.cache = true;
