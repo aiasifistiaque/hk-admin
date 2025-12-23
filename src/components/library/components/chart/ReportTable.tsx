@@ -2,7 +2,7 @@
 
 import { FC } from 'react';
 import { Box, Button, Flex, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import { TableContainer, Title, useGetAllQuery } from '../../';
+import { TableContainer, Title, useGetAllQuery, useGetQuery } from '../../';
 import moment from 'moment';
 
 type ChartTableProps = {
@@ -40,7 +40,10 @@ const ReportTable: FC<ChartTableProps> = ({ data, balance }) => {
 							<Td
 								colSpan={5}
 								textAlign='right'>
-								Previous Balance: <strong>{balance?.toLocaleString() || '0'}</strong>
+								Previous Balance:{' '}
+								<strong>
+									<PreviousBalance accountId={data?.doc?.[0]?._id} />
+								</strong>
 							</Td>
 						</Tr>
 						{data?.doc?.map((item: any) => (
@@ -51,7 +54,10 @@ const ReportTable: FC<ChartTableProps> = ({ data, balance }) => {
 								<Td>{item?.name}</Td>
 								<Td>{item?.receivedAmount?.toLocaleString() || '--'}</Td>
 								<Td>{item?.paidAmount?.toLocaleString() || '--'}</Td>
-								<Td textAlign='right'>{item?.balance?.toLocaleString() || '--'}</Td>
+								{/* <Td textAlign='right'>{item?.balance?.toLocaleString() || '--'}</Td> */}
+								<Td textAlign='right'>
+									<Balance accountId={item?._id} />
+								</Td>
 							</Tr>
 						))}
 						<Td
@@ -75,6 +81,16 @@ const ReportTable: FC<ChartTableProps> = ({ data, balance }) => {
 			</TableContainer>
 		</Box>
 	);
+};
+
+const Balance = ({ accountId }: { accountId: string }) => {
+	const { data } = useGetQuery({ path: `acc/get-balance/${accountId}` });
+	return <>{data?.balance?.toLocaleString() || 0}</>;
+};
+
+const PreviousBalance = ({ accountId }: { accountId: string }) => {
+	const { data } = useGetQuery({ path: `acc/get-balance/${accountId}` });
+	return <>{data?.previousBalance?.toLocaleString() || 0}</>;
 };
 
 const headCss: any = {
