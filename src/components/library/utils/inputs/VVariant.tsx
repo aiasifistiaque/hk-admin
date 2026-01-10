@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
-import { FormControl, Image, Stack, Flex, Heading, Input } from '@chakra-ui/react';
-import { HelperText, Label, ImageContainer, Column, radius } from '../../';
+import { FormControl, Image, Stack, Flex, Heading, Input, Grid } from '@chakra-ui/react';
+import { HelperText, Label, ImageContainer, Column, radius, JsonView, VTags } from '../../';
 import { Table, Tr, Th, Td, TableContainer, Tbody, Thead } from '@chakra-ui/react';
 
 type FormDataType = {
@@ -31,49 +31,81 @@ const VVariant: FC<FormDataType> = ({
 	section,
 	...props
 }) => {
-	const { colors, sizes } = form || {};
+	const { colors, sizes, attributes: formAttributes, customAttributes } = form || {};
 	const [variants, setVariants] = useState(value || []);
+	const [attributes, setAttributes] = useState<any>([]);
+
+	// Generate all combinations of attribute values
+	const generateVariantCombinations = (attrs: string[], customAttrs: any) => {
+		if (!attrs || attrs.length === 0) return [];
+
+		const attrValues = attrs.map(attr => ({
+			label: attr,
+			values: customAttrs?.[attr] || [],
+		}));
+
+		// Filter out attributes with no values
+		const validAttrs = attrValues.filter(attr => attr.values.length > 0);
+		if (validAttrs.length === 0) return [];
+
+		// Generate all combinations
+		const combinations: any[] = [];
+
+		const generateCombos = (index: number, current: any[]) => {
+			if (index === validAttrs.length) {
+				combinations.push([...current]);
+				return;
+			}
+
+			const attr = validAttrs[index];
+			for (const val of attr.values) {
+				current.push({ label: attr.label, value: val });
+				generateCombos(index + 1, current);
+				current.pop();
+			}
+		};
+
+		generateCombos(0, []);
+		return combinations;
+	};
 
 	useEffect(() => {
 		let variantArr: any = [];
-		if (colors?.length === 0 || sizes?.length === 0) {
-			value?.forEach((v: any) => variantArr.push(v)); // Keep existing variants
-			setVariants(variantArr);
-			onChange({
-				target: {
-					name,
-					value: variantArr,
-				},
-			});
-			return;
-		}
-		if (Array.isArray(colors) && Array.isArray(sizes)) {
-			colors.forEach((color: string) => {
-				sizes.forEach((size: string) => {
-					const variantName = `${size}-${color}`;
-					const existingVariant = value.find(
-						(v: any) => v.name.toLowerCase() === variantName.toLowerCase()
-					);
-					if (existingVariant) {
-						variantArr.push(existingVariant);
-					} else {
-						variantArr.push({
-							name: variantName,
-							price: form?.price,
-							cost: form?.cost,
-							stock: 0,
-							sku: '',
-							images: [...(form?.images ? [form?.images] : [])],
 
-							attributes: [
-								{ label: 'color', value: color },
-								{ label: 'size', value: size },
-							],
-						});
-					}
-				});
+		// Use new attribute-based system if attributes are defined
+		if (formAttributes && Array.isArray(formAttributes) && formAttributes.length > 0) {
+			const combinations = generateVariantCombinations(formAttributes, customAttributes);
+
+			combinations.forEach((combo: any[]) => {
+				const variantName = combo.map(attr => `${attr.label}-${attr.value}`).join(',');
+				const prodName = combo
+					.map(attr => `${attr.label.charAt(0).toUpperCase() + attr.label.slice(1)}=${attr.value}`)
+					.join(', ');
+				const existingVariant = value?.find(
+					(v: any) => v.name?.toLowerCase() === variantName.toLowerCase()
+				);
+
+				if (existingVariant) {
+					variantArr.push(existingVariant);
+				} else {
+					variantArr.push({
+						name: variantName,
+						price: form?.price,
+						buyPrice: form?.buyPrice,
+						prodName: form?.name + ' ' + prodName,
+						stock: 0,
+						sku: form?.sku,
+						barcode: form?.barcode,
+						images: [...(form?.images ? [form?.images] : [])],
+						attributes: combo,
+					});
+				}
 			});
+		} else {
+			// Keep existing variants if no attributes
+			variantArr = value || [];
 		}
+
 		setVariants(variantArr);
 		onChange({
 			target: {
@@ -81,7 +113,7 @@ const VVariant: FC<FormDataType> = ({
 				value: variantArr,
 			},
 		});
-	}, [form?.colors, form?.sizes]);
+	}, [form?.attributes, form?.customAttributes, form?.colors, form?.sizes]);
 
 	const onVariantValueChange = (index: number, field: string, fieldValue: any) => {
 		const updatedVariants = [...value];
@@ -98,8 +130,70 @@ const VVariant: FC<FormDataType> = ({
 		});
 	};
 
+	const onAttributesChange = (newAttributes: any) => {
+		setAttributes(newAttributes);
+
+		// Update customAttributes to only include current attributes
+		const updatedCustomAttributes: any = {};
+		newAttributes.forEach((attr: string) => {
+			// Keep existing values if attribute still exists, otherwise initialize empty array
+			updatedCustomAttributes[attr] = customAttributes?.[attr] || [];
+		});
+
+		// Update the form with cleaned customAttributes
+		onChange({
+			target: {
+				name: 'customAttributes',
+				value: updatedCustomAttributes,
+			},
+		});
+	};
+
 	return (
 		<FormControl isRequired={isRequired}>
+			<VTags
+				value={form?.attributes || []}
+				label='Attributes'
+				name='attributes'
+				onChange={e => {
+					onAttributesChange(e.target.value);
+					onChange({
+						target: {
+							name: 'attributes',
+							value: e.target.value,
+						},
+					});
+				}}
+			/>
+			{/* <JsonView data={form} /> */}
+			<Grid
+				gap={4}
+				my={4}
+				gridTemplateColumns={{ base: '1fr', md: '1fr 1fr' }}>
+				{form?.attributes &&
+					form?.attributes.length > 0 &&
+					form?.attributes?.map((attr: string, i: number) => (
+						<VTags
+							key={i}
+							value={customAttributes?.[attr] || []}
+							label={`Values for ${attr}`}
+							name={`customAttributes.${attr}`}
+							onChange={e => {
+								const updatedCustomAttributes = {
+									...(customAttributes || {}),
+									[attr]: e.target.value,
+								};
+								onChange({
+									target: {
+										name: 'customAttributes',
+										value: updatedCustomAttributes,
+									},
+								});
+							}}
+						/>
+					))}
+			</Grid>
+
 			<Stack w='full'>
 				<Label fontSize='22px'>{label}</Label>
 				<Column
@@ -124,7 +218,8 @@ const VVariant: FC<FormDataType> = ({
 												<Th>Name</Th>
 												<Th isNumeric>Cost Price</Th>
 												<Th isNumeric>Sell Price</Th>
-												<Th isNumeric>Stock</Th>
+												<Th isNumeric>Barcode</Th>
+												<Th isNumeric>SKU</Th>
 											</Tr>
 										</Thead>
 										<Tbody>
@@ -134,8 +229,8 @@ const VVariant: FC<FormDataType> = ({
 													<Td isNumeric>
 														<Input
 															size='sm'
-															value={item?.cost}
-															name='cost'
+															value={item?.buyPrice}
+															name='buyPrice'
 															onChange={e => onVariantValueChange(i, 'cost', e.target.value)}
 														/>
 													</Td>
@@ -150,9 +245,17 @@ const VVariant: FC<FormDataType> = ({
 													<Td isNumeric>
 														<Input
 															size='sm'
-															value={item?.stock}
-															name='stock'
-															onChange={e => onVariantValueChange(i, 'stock', e.target.value)}
+															value={item?.barcode}
+															name='barcode'
+															onChange={e => onVariantValueChange(i, 'barcode', e.target.value)}
+														/>
+													</Td>
+													<Td isNumeric>
+														<Input
+															size='sm'
+															value={item?.sku}
+															name='sku'
+															onChange={e => onVariantValueChange(i, 'sku', e.target.value)}
 														/>
 													</Td>
 												</Tr>

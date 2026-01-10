@@ -1,15 +1,15 @@
 'use client';
 import { FC } from 'react';
-import { FormControl, Switch, SwitchProps } from '@chakra-ui/react';
+import { FormControl, Switch, SwitchProps, Stack } from '@chakra-ui/react';
 
-import { Label } from '../..';
+import { Label, HelperText } from '../..';
 
 type InputContainerProps = SwitchProps & {
 	label: string;
 	isRequired?: boolean;
 	helper?: string;
 	value?: boolean | undefined;
-	placeholder?: any;
+	placeholder?: string;
 };
 
 const VSwitch: FC<InputContainerProps> = ({
@@ -22,17 +22,33 @@ const VSwitch: FC<InputContainerProps> = ({
 }) => {
 	return (
 		<FormControl
-			display='flex'
-			gap={4}
-			alignItems='center'
-			isRequired={isRequired}>
-			<Label htmlFor='email-alerts'>{label}</Label>
-			<Switch
-				isChecked={value}
-				id='email-alerts'
-				colorScheme='brand'
-				{...props}
-			/>
+			isRequired={isRequired}
+			gap={4}>
+			<Stack
+				spacing={2}
+				w='full'>
+				<Label>{label}</Label>
+				<Stack
+					direction='row'
+					alignItems='center'
+					spacing={3}>
+					<Switch
+						isChecked={value}
+						id={`switch-${props.name}`}
+						colorScheme='brand'
+						{...props}
+					/>
+					<Label
+						htmlFor={`switch-${props.name}`}
+						mb={0}
+						fontSize='md'
+						fontWeight='600'
+						textTransform='capitalize'>
+						{placeholder || label}
+					</Label>
+				</Stack>
+				{helper && <HelperText>{helper}</HelperText>}
+			</Stack>
 		</FormControl>
 	);
 };

@@ -42,6 +42,7 @@ import VSelectTags from '../../../utils/inputs/VSelectTags';
 import { flexAlignOptions, flexJustifyOptions, textAlignOptions } from './options';
 import VModelFields from '@/components/library/utils/inputs/VModelFields';
 import { VFormFields, VSettings } from '@/components/library/utils/inputs';
+import VStock from '@/components/library/utils/inputs/VStock';
 
 type Option = {
 	label: string;
@@ -155,6 +156,20 @@ const FormInput: FC<FormInputProps> = ({
 		case 'variant':
 			return (
 				<VVariant
+					form={formData}
+					onChange={props.onChange}
+					isRequired={isRequired}
+					name={props.name}
+					helper={item?.helper}
+					hasImage={item?.hasImage}
+					limit={item?.limit}
+					section={item?.section}
+					{...props}
+				/>
+			);
+		case 'stock':
+			return (
+				<VStock
 					form={formData}
 					onChange={props.onChange}
 					isRequired={isRequired}
