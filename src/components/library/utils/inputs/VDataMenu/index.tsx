@@ -25,7 +25,7 @@ const getNestedValue = (obj: any, path: string) => {
 	return path.split('.').reduce((acc, part) => acc?.[part], obj);
 };
 
-const VDataMenu: FC<VDataMenuProps> = ({
+const VDataMenu: FC<any> = ({
 	label,
 	item,
 	isRequired,
@@ -34,11 +34,14 @@ const VDataMenu: FC<VDataMenuProps> = ({
 	helper,
 	model,
 	dataModel,
+	form,
 	hideNew = false,
 	field,
 	type = 'value',
 	dataKey = '_id',
 	menuKey = 'name',
+	subMenuChildren,
+	subMenuKey,
 	menuAddOnKey,
 	unselect = true,
 	...props
@@ -53,12 +56,22 @@ const VDataMenu: FC<VDataMenuProps> = ({
 	const [title, setTitle] = useState<string>(`Select ${label}`);
 	const [search, setSearch] = useState<string>('');
 
-	const { data, isFetching, isError, error, isSuccess } = useGetAllQuery({
-		path: model || '',
-		limit: '999',
-		sort: item?.sorting || 'name',
-		search,
-	});
+	const { data, isFetching, isError, error, isSuccess } = useGetAllQuery(
+		{
+			path: model || '',
+			limit: '999',
+			sort: item?.sorting || 'name',
+			search,
+			...(item?.filter && {
+				filters: {
+					[item?.filter?.key]: form[item?.filter?.value],
+				},
+			}),
+		},
+		{
+			skip: item?.filter && !form[item?.filter?.value],
+		}
+	);
 
 	const handleSearch = (e: any) => {
 		setSearch(e.target.value);
@@ -78,9 +91,14 @@ const VDataMenu: FC<VDataMenuProps> = ({
 		onClose();
 	};
 
-	const getNameById = (id: string | undefined) => {
+	// useEffect(() => {
+	// 	if (!item?.filter) return;
+	// 	handleChange({ name: ``, _id: undefined });
+	// }, [item?.filter, form[item?.filter?.value]]);
+
+	const getNameById = (id: string | undefined, key = 'name') => {
 		const item = data?.doc?.find((item: any) => item._id === id);
-		return item?.name || id;
+		return item?.[key] || id;
 	};
 
 	const inputRef = useRef<any>(null);
@@ -99,7 +117,8 @@ const VDataMenu: FC<VDataMenuProps> = ({
 			id={item?._id}
 			key={i}
 			onClick={() => handleChange(item)}>
-			{getNestedValue(item, menuKey)}
+			{getNestedValue(item, menuKey)}{' '}
+			{subMenuChildren && subMenuKey && `${subMenuChildren} ${getNestedValue(item, subMenuKey)}`}
 			{/* {menuAddOnKey && `(${getNestedValue(item, menuAddOnKey)})`} */}
 		</ItemOfDataMenu>
 	));
@@ -145,7 +164,7 @@ const VDataMenu: FC<VDataMenuProps> = ({
 							<DataMenuButton
 								value={value}
 								isActive={isOpen}>
-								{value ? getNameById(value) : `Select ${label}`}
+								{value ? getNameById(value, menuKey) : `Select ${label}`}
 							</DataMenuButton>
 							<Input
 								ref={inputRef}

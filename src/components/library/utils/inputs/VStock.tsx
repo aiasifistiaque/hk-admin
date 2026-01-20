@@ -32,7 +32,95 @@ const VStock: FC<FormDataType> = ({
 	...props
 }) => {
 	const [variants, setVariants] = useState(value || []);
+	const [initialized, setInitialized] = useState(false);
 	const { data: warehouses } = useGetAllQuery({ path: 'warehouses', limit: '999' });
+
+	// Initialize stock data when warehouses are loaded
+	useEffect(() => {
+		if (!warehouses?.doc) return;
+
+		if (form?.hasVariant) {
+			// Initialize variant stocks with all warehouses
+			// const updatedVariants = form?.variant?.map((variant: any) => {
+			// 	// If openingStock doesn't exist or is empty, initialize with all warehouses
+			// 	if (!variant.openingStock || variant.openingStock.length === 0) {
+			// 		return {
+			// 			...variant,
+			// 			openingStock: warehouses.doc.map((warehouse: any) => ({
+			// 				warehouse: warehouse._id,
+			// 				stock: 0,
+			// 			})),
+			// 		};
+			// 	}
+			// 	// If openingStock exists, check if all warehouses are present
+			// 	const existingWarehouseIds = variant.openingStock.map((s: any) => s.warehouse);
+			// 	const missingWarehouses = warehouses.doc.filter(
+			// 		(warehouse: any) => !existingWarehouseIds.includes(warehouse._id)
+			// 	);
+			// 	// Add missing warehouses with stock 0
+			// 	if (missingWarehouses.length > 0) {
+			// 		const additionalStock = missingWarehouses.map((warehouse: any) => ({
+			// 			warehouse: warehouse._id,
+			// 			stock: 0,
+			// 		}));
+			// 		return {
+			// 			...variant,
+			// 			openingStock: [...variant.openingStock, ...additionalStock],
+			// 		};
+			// 	}
+			// 	return variant;
+			// });
+			// if (updatedVariants) {
+			// 	onChange({
+			// 		target: {
+			// 			name: 'variant',
+			// 			value: updatedVariants,
+			// 		},
+			// 	});
+			// }
+		} else {
+			// Initialize primary stock with all warehouses
+			if (!form?.primaryStock || form?.primaryStock?.length === 0) {
+				const initialPrimaryStock = warehouses.doc.map((warehouse: any) => ({
+					hasVariant: false,
+					warehouse: warehouse._id,
+					stock: 0,
+				}));
+
+				onChange({
+					target: {
+						name: 'primaryStock',
+						value: initialPrimaryStock,
+					},
+				});
+			} else {
+				if (initialized) return;
+				// Check if all warehouses are present in primaryStock
+				const existingWarehouseIds = form.primaryStock.map((s: any) => s.warehouse);
+				const missingWarehouses = warehouses.doc.filter(
+					(warehouse: any) => !existingWarehouseIds.includes(warehouse._id)
+				);
+
+				// Add missing warehouses with stock 0
+				if (missingWarehouses.length > 0) {
+					const additionalStock = missingWarehouses.map((warehouse: any) => ({
+						hasVariant: false,
+						warehouse: warehouse._id,
+						stock: 0,
+					}));
+
+					onChange({
+						target: {
+							name: 'primaryStock',
+							value: [...form.primaryStock, ...additionalStock],
+						},
+					});
+				}
+			}
+		}
+
+		setInitialized(true);
+	}, [warehouses, initialized, form.variant]);
 
 	useEffect(() => {
 		let variantArr: any = [];
@@ -102,7 +190,7 @@ const VStock: FC<FormDataType> = ({
 
 	const onPrimaryValueChange = (warehouseId: string, stockValue: any) => {
 		// Get current stock array or initialize empty
-		const currentStock = form?.openingStock || [];
+		const currentStock = form?.primaryStock || [];
 
 		// Create stock entry
 		const stockEntry = {
@@ -112,18 +200,13 @@ const VStock: FC<FormDataType> = ({
 			stock: Number(stockValue) || 0,
 		};
 
-		// Find existing stock entry for this variant and warehouse
-		const existingIndex = currentStock.findIndex((s: any) => s.warehouse === warehouseId);
+		// Check if warehouse already exists
+		const warehouseExists = currentStock.some((s: any) => s.warehouse === warehouseId);
 
-		let updatedStock;
-		if (existingIndex !== -1) {
-			// Update existing entry
-			updatedStock = [...currentStock];
-			updatedStock[existingIndex] = stockEntry;
-		} else {
-			// Add new entry
-			updatedStock = [...currentStock, stockEntry];
-		}
+		// Create new array - either map to update existing or spread and add new
+		const updatedStock = warehouseExists
+			? currentStock.map((s: any) => (s.warehouse === warehouseId ? stockEntry : s))
+			: [...currentStock, stockEntry];
 
 		onChange({
 			target: {
@@ -136,6 +219,7 @@ const VStock: FC<FormDataType> = ({
 	return (
 		<FormControl isRequired={isRequired}>
 			<Stack w='full'>
+				{/* <JsonView data={form} /> */}
 				<Label fontSize='22px'>{label}</Label>
 				<Column
 					gap={4}
@@ -166,6 +250,7 @@ const VStock: FC<FormDataType> = ({
 												))}
 											</Tr>
 										</Thead>
+										{/* <JsonView data={form} /> */}
 
 										<Tbody>
 											{form?.hasVariant ? (
@@ -176,6 +261,7 @@ const VStock: FC<FormDataType> = ({
 															const stockEntry = item?.openingStock?.find(
 																(s: any) => s.warehouse === warehouse?._id
 															);
+
 															return (
 																<Td key={warehouse?._id}>
 																	<Input
@@ -199,9 +285,10 @@ const VStock: FC<FormDataType> = ({
 												<Tr>
 													<Td fontWeight='600'>Stock</Td>
 													{warehouses?.doc?.map((warehouse: any) => {
-														const stockEntry = form?.openingStock?.find(
+														const stockEntry = form?.primaryStock?.find(
 															(s: any) => s.warehouse === warehouse?._id
 														);
+
 														return (
 															<Td key={warehouse?._id}>
 																<Input

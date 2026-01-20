@@ -8,9 +8,10 @@ import moment from 'moment';
 type ChartTableProps = {
 	data: any;
 	balance?: number;
+	filter?: string;
 };
 
-const ReportTable: FC<ChartTableProps> = ({ data, balance }) => {
+const ReportTable: FC<ChartTableProps> = ({ data, balance, filter }) => {
 	return (
 		<Box
 			mb={6}
@@ -42,7 +43,10 @@ const ReportTable: FC<ChartTableProps> = ({ data, balance }) => {
 								textAlign='right'>
 								Previous Balance:{' '}
 								<strong>
-									<PreviousBalance accountId={data?.doc?.[0]?._id} />
+									<PreviousBalance
+										accountId={data?.doc?.[0]?._id}
+										filter={filter}
+									/>
 								</strong>
 							</Td>
 						</Tr>
@@ -56,7 +60,10 @@ const ReportTable: FC<ChartTableProps> = ({ data, balance }) => {
 								<Td>{item?.paidAmount?.toLocaleString() || '--'}</Td>
 								{/* <Td textAlign='right'>{item?.balance?.toLocaleString() || '--'}</Td> */}
 								<Td textAlign='right'>
-									<Balance accountId={item?._id} />
+									<Balance
+										accountId={item?._id}
+										filter={filter}
+									/>
 								</Td>
 							</Tr>
 						))}
@@ -83,13 +90,13 @@ const ReportTable: FC<ChartTableProps> = ({ data, balance }) => {
 	);
 };
 
-const Balance = ({ accountId }: { accountId: string }) => {
-	const { data } = useGetQuery({ path: `acc/get-balance/${accountId}` });
+const Balance = ({ accountId, filter }: { accountId: string; filter?: string }) => {
+	const { data } = useGetQuery({ path: `acc/get-balance/${accountId}?${filter || ''}` });
 	return <>{data?.balance?.toLocaleString() || 0}</>;
 };
 
-const PreviousBalance = ({ accountId }: { accountId: string }) => {
-	const { data } = useGetQuery({ path: `acc/get-balance/${accountId}` });
+const PreviousBalance = ({ accountId, filter }: { accountId: string; filter?: string }) => {
+	const { data } = useGetQuery({ path: `acc/get-balance/${accountId}?${filter || ''}` });
 	return <>{data?.previousBalance?.toLocaleString() || 0}</>;
 };
 

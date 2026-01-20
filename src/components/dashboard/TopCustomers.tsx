@@ -3,8 +3,8 @@ import { TableObjectProps } from '@/components/library';
 import TableCustom from '../library/sections/table/TableCustom';
 
 const viewAll: TableObjectProps = {
-	title: 'Top Customers',
-	path: 'customers/analytics/top-buying',
+	title: 'Top 5 Customers (Last 7 Days)',
+	path: 'analytics/customers/top-buying?orderDate_last=days_7',
 	clickable: true,
 	toPath: '/view/customers',
 	export: false,

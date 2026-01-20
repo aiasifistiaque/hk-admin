@@ -33,6 +33,7 @@ type FormType = {
 	date: string;
 	customer: string;
 	discount: number;
+	warehouse: string;
 	paymentMethod: string;
 };
 
@@ -45,8 +46,9 @@ const CreatePurchase = ({ params }: any) => {
 		paidAmount: 0,
 		date: new Date().toISOString(),
 		customer: '',
-		paymentMethod: 'COD',
+		paymentMethod: '',
 		discount: 0,
+		warehouse: '',
 	});
 
 	const [address, setAddress] = useState<any>({
@@ -159,12 +161,11 @@ const CreatePurchase = ({ params }: any) => {
 			dueAmount: invoice?.total - Number(formData?.paidAmount || 0),
 			items: invoice?.items,
 			orderDate: formData?.date,
+			warehouse: formData?.warehouse,
 		};
 
-		console.log('Create Invoice Body:', createBody);
-
 		trigger({
-			invalidate: ['sales', 'products'],
+			invalidate: ['sales', 'products', 'orders'],
 			path: 'sales',
 			body: createBody,
 		});

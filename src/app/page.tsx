@@ -16,6 +16,7 @@ import { Column, DashContainer, SpaceBetween } from '@/components/library';
 
 import { TopCustomers, TopProducts, OrderTable } from '@/components/dashboard';
 import Link from 'next/link';
+import ProfitLossGraph from '@/components/dashboard/ProfitLossGraph';
 
 export default function UserFeedback() {
 	const { filters } = useAppSelector((state: any) => state.table);
@@ -76,6 +77,22 @@ export default function UserFeedback() {
 				gridTemplateColumns={{ base: '1fr', md: '1fr 1fr 1fr' }}
 				gap={2}>
 				<Sum
+					title={`Today's Sale`}
+					path='sales'
+					field='total'
+					filters={{
+						orderDate: new Date().toISOString().split('T')[0],
+					}}
+				/>
+				<Sum
+					title='Total Receivable'
+					path='assets'
+					field='openingBalance'
+					filters={{
+						category: 'receivable',
+					}}
+				/>
+				<Sum
 					title='Cash Balance'
 					path='assets'
 					field='openingBalance'
@@ -108,27 +125,42 @@ export default function UserFeedback() {
 					}}
 				/>
 			</Grid>
-
-			{/* <Column gap={2}>
+			<Grid
+				gridTemplateColumns={{ base: '1fr', md: '1fr 1fr' }}
+				gap={2}>
+				<Column gap={2}>
+					<DashContainer pt={4}>
+						<SpaceBetween
+							align='center'
+							px={4}>
+							<Heading size='sm'>Top 5 Selling Products (Last 7 Days)</Heading>
+						</SpaceBetween>
+						<TopProducts />
+					</DashContainer>
+				</Column>
+				<Column gap={2}>
+					<DashContainer pt={4}>
+						<SpaceBetween
+							align='center'
+							px={4}>
+							<Heading size='sm'>Top 5 Customers (Last 7 Days)</Heading>
+						</SpaceBetween>
+						<TopCustomers />
+					</DashContainer>
+				</Column>
+			</Grid>
+			<Column
+				gap={2}
+				mt={2}>
 				<DashContainer pt={4}>
-					<SpaceBetween
-						align='center'
+					<Column
+						gap={4}
 						px={4}>
-						<Heading size='sm'>Top Selling Products</Heading>
-					</SpaceBetween>
-					<TopProducts />
+						<Heading size='sm'>Profit Loss</Heading>
+						<ProfitLossGraph />
+					</Column>
 				</DashContainer>
 			</Column>
-			<Column gap={2}>
-				<DashContainer pt={4}>
-					<SpaceBetween
-						align='center'
-						px={4}>
-						<Heading size='sm'>Top Customers</Heading>
-					</SpaceBetween>
-					<TopCustomers />
-				</DashContainer>
-			</Column> */}
 		</Layout>
 	);
 }

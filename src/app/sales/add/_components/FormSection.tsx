@@ -9,7 +9,7 @@ import {
 } from '@/components/library';
 import { formFields } from '.';
 import schema from '@/models/supplier/supplier.schema';
-import { useToast } from '@chakra-ui/react';
+import { Text, useToast } from '@chakra-ui/react';
 
 const addSupplierModel = createFormFields({
 	schema,
@@ -31,6 +31,7 @@ type FormSectionProps = {
 		customer: string;
 		discount: number;
 		paymentMethod: string;
+		warehouse: string;
 	};
 	invoice: {
 		subTotal: number;
@@ -54,6 +55,19 @@ const FormSection: React.FC<FormSectionProps> = ({
 	const handleSelectProduct = (e: any) => {
 		const { value } = e.target;
 		const ifExists = items?.some((item: any) => item?._id === value?._id);
+		// const ifExists = false;
+
+		if (value?.quantity < 1) {
+			toast({
+				title: 'Error',
+				description: 'Item is Out of stock',
+				status: 'error',
+				duration: 5000,
+				isClosable: true,
+				position: 'top-right',
+			});
+			return;
+		}
 
 		if (ifExists) {
 			toast({
@@ -69,13 +83,13 @@ const FormSection: React.FC<FormSectionProps> = ({
 			const newItem = {
 				_id: value?._id,
 				image: value?.image,
-				name: value?.name,
-				price: value?.price,
-				cost: value?.cost,
+				name: value?.variantName,
+				price: value?.variantPrice,
+				cost: value?.variantBuyPrice,
 				vat: value?.vat,
-				subTotal: value?.price,
+				subTotal: value?.variantPrice,
 				qty: 1,
-				variations: value?.variations || [],
+				totalStock: value?.quantity,
 			};
 
 			console.log(newItem);
@@ -88,12 +102,18 @@ const FormSection: React.FC<FormSectionProps> = ({
 
 	return (
 		<>
-			<Row cols='1fr 1fr 1fr'>
+			<Row cols='1fr 1fr 1fr 1fr'>
 				<VDataMenu
 					{...formFields.customer}
 					dataModel={addSupplierModel}
 					onChange={handleChange}
 					value={formData.customer}
+				/>
+				<VDataMenu
+					{...formFields.warehouse}
+					// dataModel={addSupplierModel}
+					onChange={handleChange}
+					value={formData.warehouse}
 				/>
 				<VInput
 					{...formFields.date}
@@ -159,20 +179,31 @@ const FormSection: React.FC<FormSectionProps> = ({
 				<VDataMenu
 					{...formFields.paymentMethod}
 					model='assets'
-					value={''}
+					value={formData.paymentMethod}
 					unselect={false}
 					onChange={handleChange}
 				/>
 			</Row>
 			<Row gridTemplateColumns='1fr'>
-				<VDataMenu
-					label='Add product'
-					model='items'
-					type='object'
-					value={''}
-					unselect={false}
-					onChange={handleSelectProduct}
-				/>
+				{formData?.warehouse ? (
+					<VDataMenu
+						label='Add product'
+						menuKey='variantName'
+						model={`stocks?warehouse=${formData.warehouse}`}
+						type='object'
+						subMenuChildren='- Stock: '
+						subMenuKey='quantity'
+						value={''}
+						unselect={false}
+						onChange={handleSelectProduct}
+					/>
+				) : (
+					<Text
+						color='red'
+						fontWeight='600'>
+						Please select warehouse first
+					</Text>
+				)}
 			</Row>
 		</>
 	);

@@ -1,8 +1,8 @@
 import { FC, useEffect } from 'react';
 import { useState } from 'react';
 
-import { CustomTd as Td, RowContainerBase, Icon } from '../..';
-import { Box, Tr, Td as TD } from '@chakra-ui/react';
+import { CustomTd as Td, RowContainerBase, Icon, useCustomToast, JsonView } from '../..';
+import { Box, Tr, Td as TD, useToast } from '@chakra-ui/react';
 import InputElement from '../../utils/inputs/input-components/InputElement';
 
 type PurchaseProductProps = {
@@ -18,9 +18,11 @@ const PurchaseProduct: FC<PurchaseProductProps> = ({ item, i, setItem, isMobile,
 	const [qty, setQty] = useState(1);
 	const [price, setPrice] = useState(0);
 
+	const toast = useToast();
+
 	useEffect(() => {
 		setQty(item?.qty);
-		setPrice(item?.sellPrice);
+		setPrice(item?.price);
 	}, []);
 
 	const handlePrice = (e: any) => {
@@ -30,6 +32,17 @@ const PurchaseProduct: FC<PurchaseProductProps> = ({ item, i, setItem, isMobile,
 
 	const handleReturnQty = (e: any) => {
 		if (e.target.value < 0) {
+			return;
+		}
+		if (e.target.value > item.totalStock) {
+			toast({
+				title: `Quantity Can not be greater than available stock, available stock: ${item?.totalStock}`,
+				description: '',
+				status: 'error',
+				duration: 5000,
+				isClosable: true,
+				position: 'top-right',
+			});
 			return;
 		}
 		setQty(e.target.value);
@@ -80,6 +93,9 @@ const PurchaseProduct: FC<PurchaseProductProps> = ({ item, i, setItem, isMobile,
 		<Tr h='2.5rem'>
 			<TD>{i + 1}</TD>
 			<TD>{item?.name}</TD>
+			{/* <TD>
+				<JsonView data={item} />
+			</TD> */}
 
 			<TD>
 				<InputElement

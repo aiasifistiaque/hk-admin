@@ -136,6 +136,8 @@ const FormMain: FC<FormMainType> = ({
 		if (!condition) return false;
 		const { field, operator, value } = condition;
 		switch (operator) {
+			case 'neq':
+				return formData[field] == value ? false : true;
 			case 'eq':
 				return formData[field] !== value;
 			case 'true':

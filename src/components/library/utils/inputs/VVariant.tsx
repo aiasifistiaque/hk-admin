@@ -1,7 +1,16 @@
 import { FC, useEffect, useState } from 'react';
 
 import { FormControl, Image, Stack, Flex, Heading, Input, Grid } from '@chakra-ui/react';
-import { HelperText, Label, ImageContainer, Column, radius, JsonView, VTags } from '../../';
+import {
+	HelperText,
+	Label,
+	ImageContainer,
+	Column,
+	radius,
+	JsonView,
+	VTags,
+	useGetAllQuery,
+} from '../../';
 import { Table, Tr, Th, Td, TableContainer, Tbody, Thead } from '@chakra-ui/react';
 
 type FormDataType = {
@@ -34,6 +43,7 @@ const VVariant: FC<FormDataType> = ({
 	const { colors, sizes, attributes: formAttributes, customAttributes } = form || {};
 	const [variants, setVariants] = useState(value || []);
 	const [attributes, setAttributes] = useState<any>([]);
+	const { data: warehouses } = useGetAllQuery({ path: 'warehouses', limit: '999' });
 
 	// Generate all combinations of attribute values
 	const generateVariantCombinations = (attrs: string[], customAttrs: any) => {
@@ -92,12 +102,17 @@ const VVariant: FC<FormDataType> = ({
 						name: variantName,
 						price: form?.price,
 						buyPrice: form?.buyPrice,
-						prodName: form?.name + ' ' + prodName,
+						prodName: form?.name + ', ' + prodName,
 						stock: 0,
 						sku: form?.sku,
 						barcode: form?.barcode,
 						images: [...(form?.images ? [form?.images] : [])],
 						attributes: combo,
+						openingStock:
+							warehouses?.doc?.map((warehouse: any) => ({
+								warehouse: warehouse._id,
+								stock: 0,
+							})) || [],
 					});
 				}
 			});
