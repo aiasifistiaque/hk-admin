@@ -25,6 +25,7 @@ import {
 	FormSection,
 	AddressSection,
 } from './_components';
+import RestockProduct from '@/components/library/page/order/RestockProduct';
 // import QcMain from '@/components/new/QcMain';
 
 type FormType = {
@@ -33,8 +34,8 @@ type FormType = {
 	date: string;
 	customer: string;
 	discount: number;
-	paymentMethod: string;
 	warehouse: string;
+	paymentMethod: string;
 };
 
 const CreatePurchase = ({ params }: any) => {
@@ -46,9 +47,9 @@ const CreatePurchase = ({ params }: any) => {
 		paidAmount: 0,
 		date: new Date().toISOString(),
 		customer: '',
-		warehouse: '',
-		paymentMethod: 'COD',
+		paymentMethod: '',
 		discount: 0,
+		warehouse: '',
 	});
 
 	const [address, setAddress] = useState<any>({
@@ -164,8 +165,6 @@ const CreatePurchase = ({ params }: any) => {
 			warehouse: formData?.warehouse,
 		};
 
-		console.log('Create Invoice Body:', createBody);
-
 		trigger({
 			invalidate: ['purchases', 'products', 'items'],
 			path: 'purchases',
@@ -189,7 +188,7 @@ const CreatePurchase = ({ params }: any) => {
 
 			<Tbody>
 				{items?.map((item: any, i: number) => (
-					<PurchaseProduct
+					<RestockProduct
 						isMobile={isMobile}
 						key={i}
 						item={item}
@@ -227,12 +226,6 @@ const CreatePurchase = ({ params }: any) => {
 					{/* <QcMain phone={address?.phone} /> */}
 
 					<MintTableContainer>{table}</MintTableContainer>
-					{/* <Section>
-						<AddressSection
-							address={address}
-							handleAddress={handleAddress}
-						/>
-					</Section> */}
 				</Column>
 			</CreateBody>
 		</form>

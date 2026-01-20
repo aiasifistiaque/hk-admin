@@ -37,6 +37,22 @@ const AssetPage = () => {
 				path='assets'
 				filters={{ category: 'mfs' }}
 			/>
+			<ChartTable
+				title='Receivable'
+				type='asset'
+				showBalance={true}
+				addButtonText='+ Add New Receivable'
+				path='assets'
+				filters={{ category: 'receivable' }}
+			/>
+			<ChartTable
+				title='Inventory'
+				type='asset'
+				showBalance={true}
+				addButtonText='+ Add New Inventory'
+				path='assets'
+				filters={{ category: 'inventory' }}
+			/>
 		</Layout>
 	);
 };

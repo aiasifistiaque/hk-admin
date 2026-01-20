@@ -38,10 +38,10 @@ const Sum: FC<CountProps> = ({ title, path, field, price, tooltip, href, filters
 					{isError
 						? '--'
 						: isFetching
-						? '--'
-						: price
-						? `${currency.symbol}${data?.total.toLocaleString()}`
-						: data?.total?.toLocaleString()}
+							? '--'
+							: price
+								? `${currency.symbol}${data?.total.toLocaleString()}`
+								: data?.total?.toLocaleString()}
 				</StatNumber>
 			</Skeleton>
 		</StatContainer>

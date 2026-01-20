@@ -9,13 +9,13 @@ import {
 } from '@/components/library';
 import { formFields } from '.';
 import schema from '@/models/supplier/supplier.schema';
-import { useToast } from '@chakra-ui/react';
+import { Text, useToast } from '@chakra-ui/react';
 
 const addSupplierModel = createFormFields({
 	schema,
 	layout: [
 		{
-			sectionTitle: 'Customer Information',
+			sectionTitle: 'Supplier Information',
 			fields: ['name', 'email', 'phone'],
 		},
 	],
@@ -55,6 +55,7 @@ const FormSection: React.FC<FormSectionProps> = ({
 	const handleSelectProduct = (e: any) => {
 		const { value } = e.target;
 		const ifExists = items?.some((item: any) => item?._id === value?._id);
+		// const ifExists = false;
 
 		if (ifExists) {
 			toast({
@@ -70,16 +71,14 @@ const FormSection: React.FC<FormSectionProps> = ({
 			const newItem = {
 				_id: value?._id,
 				image: value?.image,
-				name: value?.name,
-				price: value?.buyPrice,
+				name: value?.variantName,
+				price: value?.variantPrice,
 				cost: value?.cost,
 				vat: value?.vat,
-				subTotal: value?.price,
+				subTotal: value?.variantPrice,
 				qty: 1,
-				variations: value?.variations || [],
+				totalStock: value?.quantity,
 			};
-
-			console.log(newItem);
 
 			setItems((prevData: any) => [...prevData, newItem]);
 		}
@@ -89,12 +88,18 @@ const FormSection: React.FC<FormSectionProps> = ({
 
 	return (
 		<>
-			<Row cols='1fr 1fr 1fr'>
+			<Row cols='1fr 1fr 1fr 1fr'>
 				<VDataMenu
 					{...formFields.customer}
 					dataModel={addSupplierModel}
 					onChange={handleChange}
 					value={formData.customer}
+				/>
+				<VDataMenu
+					{...formFields.warehouse}
+					// dataModel={addSupplierModel}
+					onChange={handleChange}
+					value={formData.warehouse}
 				/>
 				<VInput
 					{...formFields.date}
@@ -129,7 +134,7 @@ const FormSection: React.FC<FormSectionProps> = ({
 					onChange={handleChange}
 				/>
 			</Row>
-			<Row gridTemplateColumns='1fr 1fr 1fr 1fr'>
+			<Row gridTemplateColumns='1fr 1fr 1fr'>
 				<VInput
 					{...formFields.dueAmount}
 					value={
@@ -158,29 +163,33 @@ const FormSection: React.FC<FormSectionProps> = ({
 					<option value='other'>other</option>
 				</VSelect> */}
 				<VDataMenu
-					{...formFields.warehouse}
-					value={formData.warehouse}
-					model='warehouses'
-					unselect={false}
-					onChange={handleChange}
-				/>
-				<VDataMenu
 					{...formFields.paymentMethod}
-					value={formData.paymentMethod}
 					model='assets'
+					value={formData.paymentMethod}
 					unselect={false}
 					onChange={handleChange}
 				/>
 			</Row>
 			<Row gridTemplateColumns='1fr'>
-				<VDataMenu
-					label='Add product'
-					model='items'
-					type='object'
-					value={''}
-					unselect={false}
-					onChange={handleSelectProduct}
-				/>
+				{formData?.warehouse ? (
+					<VDataMenu
+						label='Add product'
+						menuKey='variantName'
+						model={`stocks?warehouse=${formData.warehouse}`}
+						type='object'
+						subMenuChildren='- Stock: '
+						subMenuKey='quantity'
+						value={''}
+						unselect={false}
+						onChange={handleSelectProduct}
+					/>
+				) : (
+					<Text
+						color='red'
+						fontWeight='600'>
+						Please select warehouse first
+					</Text>
+				)}
 			</Row>
 		</>
 	);

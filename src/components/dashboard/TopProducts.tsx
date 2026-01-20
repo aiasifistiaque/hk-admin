@@ -1,10 +1,9 @@
-import React from 'react';
 import { TableObjectProps } from '@/components/library';
 import TableCustom from '../library/sections/table/TableCustom';
 
 const viewAll: TableObjectProps = {
 	title: 'Top Products',
-	path: 'products/top-selling',
+	path: 'analytics/products/top-selling?orderDate_last=days_7',
 	clickable: true,
 	toPath: '/view/products',
 	export: false,

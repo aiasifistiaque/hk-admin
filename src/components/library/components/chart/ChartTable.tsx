@@ -72,21 +72,6 @@ const ChartTable: FC<ChartTableProps> = ({
 								{showBalance && (
 									<Td textAlign='center'>{account.openingBalance?.toLocaleString() || '0.00'}</Td>
 								)}
-								{/* <Td textAlign='right'>
-									<Button
-										size='sm'
-										colorScheme='blue'
-										variant='ghost'
-										mr={2}>
-										Edit
-									</Button>
-									<Button
-										size='sm'
-										colorScheme='red'
-										variant='ghost'>
-										Delete
-									</Button>
-								</Td> */}
 							</Tr>
 						))}
 					</Tbody>

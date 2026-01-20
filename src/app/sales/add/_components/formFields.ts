@@ -5,6 +5,12 @@ const formFields = {
 		isRequired: true,
 		model: 'customers',
 	},
+	warehouse: {
+		name: 'warehouse',
+		label: 'Warehouse',
+		isRequired: true,
+		model: 'warehouses',
+	},
 	date: {
 		name: 'date',
 		label: 'Invoice Date',
@@ -21,6 +27,7 @@ const formFields = {
 	paymentMethod: {
 		name: 'paymentMethod',
 		label: 'Payment Method',
+		model: 'assets',
 	},
 	discount: {
 		name: 'discount',

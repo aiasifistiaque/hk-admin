@@ -37,6 +37,8 @@ const useGetOrderTotal = ({ items = [], discount = 0, shipping = 0 }: GetOrderTy
 				_id: item._id,
 				name: item.name,
 				image: item.image,
+				cost: item.cost,
+				totalCost: item.cost * item.qty,
 				totalPrice: item.price * item.qty,
 				vat: itemVat,
 				unitVat: itemVat / item.qty,

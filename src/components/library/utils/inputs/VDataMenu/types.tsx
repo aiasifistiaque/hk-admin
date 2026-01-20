@@ -9,12 +9,15 @@ export type VDataMenuProps = InputProps & {
 	model: string;
 	dataModel?: any;
 	hideNew?: boolean;
+	form: boolean;
 	item?: any;
 	field?: string;
 	type?: 'object' | 'value' | string;
 	dataKey?: 'string';
 	unselect?: boolean;
 	menuKey?: string;
+	subMenuChildren?: string;
+	subMenuKey?: string;
 	menuAddOnKey?: string;
 	addItem?: boolean;
 	valueKey?: string;
