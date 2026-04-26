@@ -23,6 +23,10 @@ const tags = [
 	'uploads',
 	'chats',
 	'messages',
+	'items',
+	'/sidebar/crm/server',
+	'filters',
+	'stocks',
 ];
 
 export const mainApi = createApi({
