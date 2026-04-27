@@ -14,14 +14,18 @@ export const viewport = {
 	userScalable: false,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	return (
-		<html lang='en' data-theme='light' >
-			<head>
-			</head>
-			<body className={GeistSans.className}>
+		<html lang='en' data-theme='light' suppressHydrationWarning>
+			<head></head>
+			<body className={GeistSans.className} chakra-ui-light='true'>
 				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);
 }
+
