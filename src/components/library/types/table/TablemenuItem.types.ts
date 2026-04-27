@@ -61,7 +61,7 @@ type UpdateApiItem = BaseMenuItem & {
 	bodyFn?: (data: any) => object;
 };
 
-type UpdateKeyItem = BaseMenuItem & {
+export type UpdateKeyItem = BaseMenuItem & {
 	type: 'update-key';
 	dataPath?: string;
 	keyType: 'data-menu' | 'string' | 'number' | 'boolean' | 'array' | 'select';
