@@ -27,6 +27,14 @@ const tags = [
 	'/sidebar/crm/server',
 	'filters',
 	'stocks',
+	'files',
+	'sms/check',
+	'assets',
+	'sales',
+	'upload',
+	'analytics/products/top-selling?orderDate_last=days_7',
+	'analytics/customers/top-buying?orderDate_last=days_7',
+	'analytics/yearly-profit-loss',
 ];
 
 export const mainApi = createApi({
