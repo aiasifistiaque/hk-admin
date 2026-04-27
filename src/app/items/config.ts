@@ -9,6 +9,7 @@ export const fields = [
 	'name',
 	'address',
 	'phone',
+	'price',
 	'createdAt',
 	'updatedAt',
 ];

@@ -2,6 +2,7 @@ import { fields, formFields } from '@/app/items/config';
 import { MenuItemProps } from '@/components/library';
 import ViewOrderModal from '@/components/library/pos/ViewOrderModel';
 import ViewStockModal from '@/components/library/pos/ViewStockModal';
+import { UpdateKeyItem } from '@/components/library/types/table';
 
 const itemMenu: MenuItemProps[] = [
 	{
@@ -10,11 +11,18 @@ const itemMenu: MenuItemProps[] = [
 		modal: ViewStockModal,
 	},
 	{
+		title: 'Edit Price',
+		type: 'update-key',
+		keyType: 'number',
+		key: 'price',
+		layout: formFields,
+	},
+	{
 		title: 'View Items',
 		type: 'view-modal',
 		fields: fields,
 	},
-	{ type: 'view-item', title: 'View Details' },
+	// { type: 'view-item', title: 'View Details' },
 	{
 		title: 'Edit Details',
 		type: 'edit-modal',
