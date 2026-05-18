@@ -101,7 +101,7 @@ const CreatePurchase = ({ params }: any) => {
 	};
 
 	const [trigger, result] = usePostMutation();
-
+	console.log('result', result);
 	useCustomToast({
 		...result,
 		successText: 'Invoice Created successfully',
@@ -109,7 +109,7 @@ const CreatePurchase = ({ params }: any) => {
 
 	useRedirect({
 		isSuccess: result?.isSuccess,
-		path: `/sales/${result?.data?._id}`,
+		path: `/sales/${result?.data?.doc?.id}`,
 		isLoading: result?.isLoading,
 	});
 
