@@ -46,13 +46,6 @@ const FormContent: FC<FormPageType> = ({
 		return sections;
 	}, [data]);
 
-	// useCustomToast({
-	// 	successText: type == 'update' ? 'Information Updated Successfully' : 'Item added successfully',
-	// 	isSuccess,
-	// 	isError,
-	// 	isLoading: isLoading,
-	// 	error: error,
-	// });
 
 	const handleChange = (e: any) => {
 		if (e.target.name.includes('.')) {

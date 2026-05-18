@@ -35,7 +35,7 @@ const SendBulkSmsModal = ({ path, ids }: { path: string; ids: string[] }) => {
 
 	useCustomToast({
 		...result,
-		successText: 'SMS sent successfully',
+		successText: 'SMS Sent Successfully',
 	});
 
 	const closeModal = () => {

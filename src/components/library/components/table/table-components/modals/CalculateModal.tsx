@@ -103,7 +103,7 @@ const CalculateModal: FC<any> = ({
 	}, [isLoading]);
 
 	useCustomToast({
-		successText: prompt?.successMsg || `Batch item updated successfully`,
+		successText: prompt?.successMsg || `Batch Updated Successfully`,
 		isSuccess,
 		isError,
 		isLoading,

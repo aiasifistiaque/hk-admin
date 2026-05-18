@@ -60,8 +60,8 @@ const useCustomToast = ({
 					<ToastBody
 						{...successContainer}
 						onClose={onClose}
-						title={successTitle || 'success'}>
-						{successText || 'success'}
+						title={successTitle || 'Success'}>
+						{successText || 'Success'}
 					</ToastBody>
 				),
 			});

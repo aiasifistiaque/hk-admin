@@ -99,7 +99,7 @@
 
 // 	useCustomToast({
 // 		...result,
-// 		successText: 'Sale Return created successfully',
+// 		successText: 'Sale Return Created Successfully',
 // 	});
 
 // 	useRedirect({
@@ -428,7 +428,7 @@ const CreateSaleReturn = () => {
 
 	useCustomToast({
 		...result,
-		successText: 'Sale Return created successfully',
+		successText: 'Sale Return Created Successfully',
 	});
 
 	useRedirect({

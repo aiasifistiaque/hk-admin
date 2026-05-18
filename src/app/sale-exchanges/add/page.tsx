@@ -101,7 +101,7 @@ const CreateSaleExchange = () => {
 
 	useCustomToast({
 		...result,
-		successText: 'Sale Exchange created successfully',
+		successText: 'Sale Exchange Created Successfully',
 	});
 
 	useRedirect({

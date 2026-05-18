@@ -23,7 +23,7 @@ const table: ServerTableObjectProps = {
 				prompt: {
 					title: 'Turn On Permission',
 					body: 'This will turn on the permission protection for this item. Are you sure you want to proceed?',
-					successMsg: 'Permission protection turned on successfully',
+					successMsg: 'Permission protection turned on Successfully',
 				},
 			},
 			{
@@ -35,7 +35,7 @@ const table: ServerTableObjectProps = {
 				prompt: {
 					title: 'Turn Off Permission',
 					body: 'This will turn off the permission protection for this item. Are you sure you want to proceed?',
-					successMsg: 'Permission protection turned off successfully',
+					successMsg: 'Permission protection turned off Successfully',
 				},
 			},
 		],
@@ -59,7 +59,7 @@ const table: ServerTableObjectProps = {
 				title: 'Turn On Permission',
 				body: 'This will turn on the permission protection for this item. Are you sure you want to proceed?',
 				btnText: 'Confirm',
-				successMsg: 'Permission protection turned on successfully',
+				successMsg: 'Permission protection turned on Successfully',
 			},
 		},
 		{
@@ -73,7 +73,7 @@ const table: ServerTableObjectProps = {
 				title: 'Turn Off Permission',
 				body: 'This will turn off the permission protection for this item. Are you sure you want to proceed?',
 				btnText: 'Confirm',
-				successMsg: 'Permission protection turned off successfully',
+				successMsg: 'Permission protection turned off Successfully',
 			},
 		},
 		{

@@ -63,7 +63,7 @@ const FormPage: FC<FormPageType> = ({
 
 	useRedirect({ isSuccess, isLoading, path: `/${path}` });
 	useCustomToast({
-		successText: type == 'update' ? 'Information Updated Successfully' : 'Item added successfully',
+		successText: type == 'update' ? 'Information Updated Successfully' : 'Item Added Successfully',
 		isSuccess,
 		isError,
 		isLoading: isLoading,

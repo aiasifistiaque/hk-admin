@@ -74,7 +74,7 @@ const CreateModal = (props: CreateModalProps) => {
 		? prompt?.successMsg
 		: type == 'update'
 		? 'Information Updated Successfully'
-		: 'Item added successfully';
+		: 'Item Added Successfully';
 
 	useCustomToast({
 		successText,

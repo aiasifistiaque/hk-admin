@@ -98,7 +98,7 @@ const CreateServerModal = (props: CreateServerModalProps) => {
 		}
 	}, [isFetching]);
 
-	const successText = prompt?.successMsg || 'Item added successfully';
+	const successText = prompt?.successMsg || 'Item Added Successfully';
 
 	useCustomToast({
 		successText,

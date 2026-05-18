@@ -134,7 +134,6 @@ const FormSection: React.FC<FormSectionProps> = ({
 						subMenuKey='quantity'
 						value={''}
 						unselect={false}
-						isRequired={true}
 						onChange={handleSelectProduct}
 					/>
 				) : (

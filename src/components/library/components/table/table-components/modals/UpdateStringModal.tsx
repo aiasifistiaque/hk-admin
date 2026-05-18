@@ -94,7 +94,7 @@ const UpdateStringModal: FC<UpdateKeyProps> = ({ item, doc, id, path, type, icon
 	};
 
 	useCustomToast({
-		successText: prompt?.successMsg || `Item updated successfully`,
+		successText: prompt?.successMsg || `Item Updated Successfully`,
 		...result,
 	});
 

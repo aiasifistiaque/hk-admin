@@ -75,7 +75,7 @@ const EditSelectedModal: FC<EditManyModalType> = ({
 	}, [isLoading]);
 
 	useCustomToast({
-		successText: `Batch item updated successfully`,
+		successText: `Batch Item Updated Successfully`,
 		isSuccess,
 		isError,
 		isLoading,

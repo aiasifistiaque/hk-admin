@@ -85,7 +85,7 @@ const UpdateDataMenuModal: FC<UpdateKeyProps> = ({ item, doc, id }) => {
 	}, [isLoading]);
 
 	useCustomToast({
-		successText: prompt?.successMsg || `Item updated successfully`,
+		successText: prompt?.successMsg || `Item Updated Successfully`,
 		...result,
 	});
 

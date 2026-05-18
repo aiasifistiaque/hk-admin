@@ -165,7 +165,7 @@ const CreatePurchase = ({ params }: any) => {
 
 	useCustomToast({
 		...result,
-		successText: 'Invoice Updated successfully',
+		successText: 'Invoice Updated Successfully',
 	});
 
 	useRedirect({

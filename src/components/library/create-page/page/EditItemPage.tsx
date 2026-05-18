@@ -33,7 +33,7 @@ const EditItemPage: FC<FormPageType> = ({ data: dataFields }) => {
 
 	useRedirect({ isSuccess, isLoading, path: `/${path}` });
 	useCustomToast({
-		successText: 'Item Updated successfully',
+		successText: 'Item Updated Successfully',
 		isSuccess,
 		isError,
 		isLoading: isLoading,

@@ -66,7 +66,7 @@ const CreatePurchase = () => {
 
 	useCustomToast({
 		...result,
-		successText: 'Stock Adjustment Created successfully',
+		successText: 'Stock Adjustment Created Successfully',
 	});
 
 	useRedirect({
