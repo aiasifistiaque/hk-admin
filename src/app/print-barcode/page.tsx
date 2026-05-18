@@ -6,17 +6,11 @@ import {
 	VDataMenu,
 	VInput,
 	useGetAllQuery,
-	useGetOneQuery,
-	useGetQuery,
 } from '@/components/library';
 import {
 	Button,
-	Flex,
 	Text,
 	Box,
-	Radio,
-	RadioGroup,
-	Stack,
 	SimpleGrid,
 	Card,
 	CardBody,
@@ -29,18 +23,24 @@ import {
 	Input,
 	Center,
 	Grid,
+	Flex,
 } from '@chakra-ui/react';
 import { useState, useRef } from 'react';
 import Barcode from 'react-barcode';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
+interface SelectedProduct {
+	_id: string;
+	quantity: number;
+}
+
 const PrintBarcodePage = () => {
-	const [product, setProduct] = useState('');
-	const [printer, setPrinter] = useState('Label Printer(40mm*25mm)');
+	const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
 	const [showPreview, setShowPreview] = useState(false);
-	const [quantity, setQuantity] = useState(1);
-	const barcodeRef = useRef<HTMLDivElement>(null);
+	const [menuValue, setMenuValue] = useState('');
+	const [isDownloading, setIsDownloading] = useState(false);
+	const [isPrinting, setIsPrinting] = useState(false);
 	const printRef = useRef<HTMLDivElement>(null);
 
 	const { data: stocksData } = useGetAllQuery({
@@ -48,200 +48,211 @@ const PrintBarcodePage = () => {
 		limit: 9999,
 	});
 
-	const selectedProduct = stocksData?.doc?.find((stock: any) => stock._id === product);
+	const { data: shopData } = useGetAllQuery({
+		path: 'shops',
+	});
+	const shopName = shopData?.doc?.[0]?.name || 'HK';
 
-	const getBarcodeValue = () => {
-		if (!selectedProduct?.code) return '0000000000';
-		const code = selectedProduct.code.toUpperCase();
+	const getProductDetails = (id: string) => {
+		return stocksData?.doc?.find((stock: any) => stock._id === id);
+	};
+
+	const getBarcodeValue = (product: any) => {
+		if (!product?.code) return '0000000000';
+		const code = product.code.toUpperCase();
 		return code.replace('STK-', '').replace(/[^0-9]/g, '');
 	};
 
-	const printerOptions = [
-		{ label: 'A4 Paper', value: 'Regular Printer (A4)', size: '210×297mm' },
-		{ label: '40×25mm', value: 'Label Printer(40mm*25mm)', size: '40×25mm' },
-		{ label: '45×35mm', value: 'Label Printer(45mm*35mm)', size: '45×35mm' },
-		{ label: '41×10mm', value: 'Label Printer(41mm*10mm)', size: '41×10mm' },
-		{ label: '81×12mm', value: 'Label Printer(81mm*12mm)', size: '81×12mm' },
-	];
-
-	const getPrinterDimensions = () => {
-		switch (printer) {
-			case 'Regular Printer (A4)':
-				return { width: 210, height: 297, widthPx: 794, heightPx: 1123 };
-			case 'Label Printer(40mm*25mm)':
-				return { width: 40, height: 25, widthPx: 151, heightPx: 94 };
-			case 'Label Printer(45mm*35mm)':
-				return { width: 45, height: 35, widthPx: 170, heightPx: 132 };
-			case 'Label Printer(41mm*10mm)':
-				return { width: 41, height: 10, widthPx: 155, heightPx: 38 };
-			case 'Label Printer(81mm*12mm)':
-				return { width: 81, height: 12, widthPx: 306, heightPx: 45 };
-			default:
-				return { width: 40, height: 25, widthPx: 151, heightPx: 94 };
+	const handleAddProduct = (productId: string) => {
+		if (!productId) return;
+		if (!selectedProducts.find(p => p._id === productId)) {
+			setSelectedProducts([...selectedProducts, { _id: productId, quantity: 1 }]);
 		}
+		setShowPreview(false);
 	};
 
-	const getPreviewScale = () => {
-		const dims = getPrinterDimensions();
-		if (printer === 'Regular Printer (A4)') return 0.5;
-		if (dims.height <= 12) return 4;
-		if (dims.height <= 25) return 3;
-		return 2.5;
+	const handleQuantityChange = (productId: string, quantity: number) => {
+		if (isNaN(quantity) || quantity < 1) quantity = 1;
+		setSelectedProducts(
+			selectedProducts.map(p => (p._id === productId ? { ...p, quantity } : p))
+		);
+		setShowPreview(false);
+	};
+
+	const handleRemoveProduct = (productId: string) => {
+		setSelectedProducts(selectedProducts.filter(p => p._id !== productId));
+		setShowPreview(false);
 	};
 
 	const handlePreview = () => {
-		if (!product) return;
+		if (selectedProducts.length === 0) return;
 		setShowPreview(true);
 	};
 
-	const handleDownloadPDF = async () => {
-		if (!printRef.current) return;
-
-		const canvas = await html2canvas(printRef.current, {
-			scale: 4,
-			backgroundColor: '#ffffff',
-			logging: false,
-		});
-		const imgData = canvas.toDataURL('image/png');
-
-		const dimensions = getPrinterDimensions();
+	const generatePDFDocument = async () => {
+		if (!printRef.current) return null;
 
 		const pdf = new jsPDF({
-			orientation: dimensions.width > dimensions.height ? 'landscape' : 'portrait',
+			orientation: 'portrait',
 			unit: 'mm',
-			format: [dimensions.width, dimensions.height],
+			format: 'a4',
 		});
 
-		pdf.addImage(imgData, 'PNG', 0, 0, dimensions.width, dimensions.height);
-		pdf.save(`barcode-${selectedProduct?.code || 'label'}.pdf`);
+		const pages = printRef.current.children;
+		
+		for (let i = 0; i < pages.length; i++) {
+			const pageElement = pages[i] as HTMLElement;
+			const canvas = await html2canvas(pageElement, {
+				scale: 2,
+				backgroundColor: '#ffffff',
+				logging: false,
+			});
+			const imgData = canvas.toDataURL('image/png');
+			
+			if (i > 0) {
+				pdf.addPage();
+			}
+			pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+		}
+		
+		return pdf;
 	};
 
-	const handlePrint = () => {
-		if (!printRef.current) return;
-
-		const dimensions = getPrinterDimensions();
-		const printWindow = window.open('', '', 'height=600,width=800');
-		if (printWindow) {
-			printWindow.document.write('<html><head><title>Print Barcode</title>');
-			printWindow.document.write('<style>');
-			printWindow.document.write(`
-				@page { size: ${dimensions.width}mm ${dimensions.height}mm; margin: 0; }
-				body { margin: 0; padding: 0; }
-				* { box-sizing: border-box; }
-			`);
-			printWindow.document.write('</style></head><body>');
-			printWindow.document.write(printRef.current.innerHTML);
-			printWindow.document.write('</body></html>');
-			printWindow.document.close();
-			setTimeout(() => printWindow.print(), 300);
+	const handleDownloadPDF = async () => {
+		setIsDownloading(true);
+		try {
+			const pdf = await generatePDFDocument();
+			if (pdf) {
+				pdf.save(`barcodes.pdf`);
+			}
+		} finally {
+			setIsDownloading(false);
 		}
 	};
 
-	const isSmallLabel = printer.includes('10mm') || printer.includes('12mm');
-	const dimensions = getPrinterDimensions();
-	const scale = getPreviewScale();
+	const handlePrint = async () => {
+		setIsPrinting(true);
+		try {
+			const pdf = await generatePDFDocument();
+			if (pdf) {
+				pdf.autoPrint();
+				const blob = pdf.output('bloburl');
+				window.open(blob, '_blank');
+			}
+		} finally {
+			setIsPrinting(false);
+		}
+	};
 
-	const renderBarcodeContent = (forPrint = false) => {
-		const containerStyle: React.CSSProperties = {
-			width: forPrint ? `${dimensions.width}mm` : `${dimensions.widthPx * scale}px`,
-			height: forPrint ? `${dimensions.height}mm` : `${dimensions.heightPx * scale}px`,
-			padding: forPrint
-				? isSmallLabel
-					? '1mm'
-					: '2mm'
-				: isSmallLabel
-					? `${4 * scale}px`
-					: `${8 * scale}px`,
-			backgroundColor: 'white',
-			display: 'flex',
-			flexDirection: isSmallLabel ? 'row' : 'column',
-			alignItems: 'center',
-			justifyContent: isSmallLabel ? 'space-between' : 'center',
-			boxSizing: 'border-box',
-			overflow: 'hidden',
-		};
+	const renderBarcodeBox = (product: any) => {
+		return (
+			<Box
+				w='45mm'
+				h='40mm'
+				p='1.5mm'
+				display='flex'
+				flexDirection='column'
+				alignItems='center'
+				justifyContent='space-between'
+				bg='white'
+				border='1px solid black'
+				overflow='hidden'
+				sx={{ pageBreakInside: 'avoid' }}
+				fontFamily='Arial, sans-serif'
+				color='black'
+			>
+				{/* 1st row: Brand/shop name */}
+				<Text
+					fontSize='11pt'
+					fontWeight='normal'
+					textAlign='center'
+					w='full'
+					m={0}
+					lineHeight='1'
+				>
+					{shopName}
+				</Text>
 
-		const textStyle = (fontSizePt: number, bold = false) => ({
-			fontSize: forPrint ? `${fontSizePt}pt` : `${fontSizePt * 1.33 * scale}px`,
-			fontWeight: bold ? 'bold' : 'normal',
-			lineHeight: 1.2,
-			margin: 0,
-			whiteSpace: 'nowrap' as const,
-			overflow: 'hidden',
-			textOverflow: 'ellipsis',
-			color: 'black',
-			fontFamily: 'Arial, sans-serif',
-		});
+				{/* 2nd row: Full product name */}
+				<Text
+					fontSize='8pt'
+					textAlign='center'
+					w='full'
+					lineHeight='1.1'
+					m={0}
+					whiteSpace='normal'
+					wordBreak='break-word'
+				>
+					{product?.variantName || 'Product Name'}
+				</Text>
 
-		if (isSmallLabel) {
-			return (
-				<div style={containerStyle}>
-					<div
-						style={{
-							display: 'flex',
-							flexDirection: 'column',
-							justifyContent: 'center',
-							alignItems: 'flex-start',
-							flex: 1,
-							paddingRight: forPrint ? '1mm' : `${4 * scale}px`,
-							overflow: 'hidden',
-							maxWidth: '65%',
-						}}>
-						<div style={textStyle(4)}>{selectedProduct?.variantName || 'Product'}</div>
-						<div style={textStyle(4, true)}>
-							৳{selectedProduct?.variantPrice?.toLocaleString() || '0'}
-						</div>
-					</div>
-					<div style={{ flexShrink: 0 }}>
+				{/* Barcode and Number grouped to control exact gap */}
+				<Box display='flex' flexDirection='column' alignItems='center' gap='4px' w='full'>
+					{/* 3rd row: Barcode */}
+					<Box display='flex' justifyContent='center' w='full' m={0}>
 						<Barcode
-							value={getBarcodeValue()}
-							width={forPrint ? 0.8 : 1 * scale}
-							height={
-								forPrint
-									? printer.includes('10mm')
-										? 15
-										: 25
-									: (printer.includes('10mm') ? 20 : 30) * scale
-							}
-							fontSize={forPrint ? 8 : 10 * scale}
+							value={getBarcodeValue(product)}
+							width={1.2}
+							height={24}
+							fontSize={0}
 							margin={0}
 							displayValue={false}
 						/>
-					</div>
-				</div>
-			);
-		}
+					</Box>
 
-		return (
-			<div style={containerStyle}>
-				<div
-					style={{
-						...textStyle(8),
-						marginBottom: forPrint ? '1mm' : `${2 * scale}px`,
-						maxWidth: '95%',
-					}}>
-					{selectedProduct?.variantName || 'Product Name'}
-				</div>
-				<div
-					style={{
-						marginBottom: forPrint ? '1mm' : `${2 * scale}px`,
-					}}>
-					<Barcode
-						value={getBarcodeValue()}
-						width={forPrint ? 1.5 : 2 * scale}
-						height={forPrint ? 30 : 40 * scale}
-						fontSize={forPrint ? 10 : 14 * scale}
-						margin={0}
-						displayValue={true}
-						textMargin={forPrint ? 1 : 2}
-					/>
-				</div>
-				<div style={textStyle(10, true)}>
-					৳{selectedProduct?.variantPrice?.toLocaleString() || '0'}
-				</div>
-			</div>
+					{/* 4th row: Barcode number written */}
+					<Text fontSize='8pt' m={0} lineHeight='1'>
+						{getBarcodeValue(product)}
+					</Text>
+				</Box>
+
+				{/* 5th row: Product price */}
+				<Text
+					fontSize='12pt'
+					fontWeight='bold'
+					// m={0}
+					lineHeight='1'
+					marginBottom='8px'
+				>
+					Price: TK {product?.variantPrice?.toLocaleString() || '0'}
+				</Text>
+			</Box>
 		);
 	};
+
+	// Generate all barcodes based on selected products and their quantities
+	const getAllBarcodes = () => {
+		const barcodes: any[] = [];
+		selectedProducts.forEach(sp => {
+			const product = getProductDetails(sp._id);
+			if (product) {
+				for (let i = 0; i < sp.quantity; i++) {
+					barcodes.push(product);
+				}
+			}
+		});
+		return barcodes;
+	};
+
+	const barcodes = getAllBarcodes();
+
+	// Constants for A4 layout
+	const ITEMS_PER_COLUMN = 6;
+	const COLUMNS_PER_PAGE = 3;
+	const ITEMS_PER_PAGE = ITEMS_PER_COLUMN * COLUMNS_PER_PAGE;
+
+	const printPages = [];
+	for (let i = 0; i < barcodes.length; i += ITEMS_PER_PAGE) {
+		const pageBarcodes = barcodes.slice(i, i + ITEMS_PER_PAGE);
+		
+		// Split into columns manually
+		const columns = [];
+		for (let j = 0; j < pageBarcodes.length; j += ITEMS_PER_COLUMN) {
+			columns.push(pageBarcodes.slice(j, j + ITEMS_PER_COLUMN));
+		}
+		
+		printPages.push(columns);
+	}
 
 	return (
 		<Layout title='Print Barcode'>
@@ -252,7 +263,7 @@ const PrintBarcodePage = () => {
 					{/* Left Panel - Selection */}
 					<Card
 						w='full'
-						h='700px'
+						h='750px'
 						overflow='hidden'>
 						<CardHeader pb={2}>
 							<Heading size='md'>Barcode Settings</Heading>
@@ -275,10 +286,10 @@ const PrintBarcodePage = () => {
 										Select Product
 									</Text>
 									<VDataMenu
-										value={product}
+										value={menuValue}
 										onChange={(e: any) => {
-											setProduct(e.target.value);
-											setShowPreview(false);
+											handleAddProduct(e.target.value);
+											setMenuValue('');
 										}}
 										label='Choose a product'
 										model='stocks'
@@ -286,71 +297,58 @@ const PrintBarcodePage = () => {
 									/>
 								</Box>
 
-								{/* Selected Product Info */}
-								{selectedProduct && (
-									<Box
-										p={4}
-										bg='gray.50'
-										_dark={{ bg: 'gray.700' }}
-										borderRadius='md'>
-										<Text
-											fontSize='sm'
-											mb={1}>
-											Selected Product
-										</Text>
-										<Text fontWeight='bold'>{selectedProduct.variantName}</Text>
-										<HStack mt={2}>
-											<Badge colorScheme='blue'>{selectedProduct.code}</Badge>
-											<Badge colorScheme='green'>
-												৳{selectedProduct.variantPrice?.toLocaleString()}
-											</Badge>
-										</HStack>
-									</Box>
-								)}
+								{/* Selected Products Info */}
+								<VStack align="stretch" spacing={3}>
+									{selectedProducts.map((sp) => {
+										const product = getProductDetails(sp._id);
+										if (!product) return null;
+										return (
+											<Box
+												key={sp._id}
+												p={3}
+												bg='gray.50'
+												_dark={{ bg: 'gray.700' }}
+												borderRadius='md'
+												position="relative"
+											>
+												<Box position="absolute" top={2} right={2}>
+													<Button size="xs" colorScheme="red" variant="ghost" onClick={() => handleRemoveProduct(sp._id)}>
+														🗑️
+													</Button>
+												</Box>
+												<Text fontWeight='bold' pr={6} noOfLines={2} fontSize="sm">{product.variantName}</Text>
+												<HStack mt={2} justify="space-between" align="center">
+													<HStack>
+														<Badge colorScheme='blue'>{product.code}</Badge>
+														<Badge colorScheme='green'>
+															৳{product.variantPrice?.toLocaleString()}
+														</Badge>
+													</HStack>
+													<HStack w="100px">
+														<Text fontSize="xs">Qty:</Text>
+														<Input
+															size="sm"
+															type="number"
+															min={1}
+															value={sp.quantity}
+															onChange={(e) => handleQuantityChange(sp._id, parseInt(e.target.value))}
+															bg="white"
+															_dark={{ bg: 'gray.800' }}
+														/>
+													</HStack>
+												</HStack>
+											</Box>
+										);
+									})}
+								</VStack>
 
-								<Divider />
-
-								{/* Printer Selection */}
-								<Box>
-									<Text
-										fontWeight='semibold'
-										mb={3}>
-										Select Label Size
-									</Text>
-									<SimpleGrid
-										columns={2}
-										spacing={2}>
-										{printerOptions.map(option => (
-											<Button
-												key={option.value}
-												size='xs'
-												h='auto'
-												py={3}
-												variant={printer === option.value ? 'solid' : 'outline'}
-												colorScheme={printer === option.value ? 'purple' : 'gray'}
-												onClick={() => {
-													setPrinter(option.value);
-													setShowPreview(false);
-												}}
-												flexDirection='column'
-												gap={0}>
-												<Text fontSize='sm'>{option.label}</Text>
-												<Text
-													fontSize='xs'
-													opacity={0.7}>
-													{option.size}
-												</Text>
-											</Button>
-										))}
-									</SimpleGrid>
-								</Box>
-
-								<Divider />
+								{selectedProducts.length > 0 && <Divider />}
 
 								{/* Generate Button */}
 								<Button
 									onClick={handlePreview}
-									isDisabled={!product}
+									isDisabled={selectedProducts.length === 0}
+									colorScheme="purple"
 									size='lg'
 									w='full'>
 									Generate Preview
@@ -362,24 +360,26 @@ const PrintBarcodePage = () => {
 					{/* Right Panel - Preview */}
 					<Card
 						w='full'
-						h='700px'
+						h='750px'
 						overflow='hidden'>
 						<CardHeader pb={2}>
 							<HStack justify='space-between'>
 								<Heading size='md'>Preview</Heading>
 								{showPreview && (
 									<Badge colorScheme='purple'>
-										{dimensions.width}×{dimensions.height}mm
+										A4 Paper (50x40mm)
 									</Badge>
 								)}
 							</HStack>
 						</CardHeader>
 						<CardBody
 							overflowY='auto'
+							bg='gray.100'
+							_dark={{ bg: 'gray.800' }}
 							sx={{
 								'&::-webkit-scrollbar': { width: '4px' },
 								'&::-webkit-scrollbar-track': { bg: 'transparent' },
-								'&::-webkit-scrollbar-thumb': { bg: 'gray.200', borderRadius: 'full' },
+								'&::-webkit-scrollbar-thumb': { bg: 'gray.400', borderRadius: 'full' },
 							}}>
 							{!showPreview ? (
 								<Center
@@ -391,53 +391,20 @@ const PrintBarcodePage = () => {
 									borderColor='gray.200'>
 									<VStack color='gray.400'>
 										<Text fontSize='4xl'>📦</Text>
-										<Text>Select a product and click Generate Preview</Text>
+										<Text>Select products and click Generate Preview</Text>
 									</VStack>
 								</Center>
 							) : (
 								<VStack
 									spacing={6}
-									h='full'>
-									{/* Scaled Preview for Display */}
-									<Center
-										flex={1}
-										w='full'
-										py={4}>
-										<Box
-											ref={barcodeRef}
-											p={4}
-											bg='gray.100'
-											_dark={{ bg: 'gray.700' }}
-											borderRadius='lg'
-											display='flex'
-											alignItems='center'
-											justifyContent='center'
-											minH='200px'
-											w='full'>
-											<Box
-												border='1px solid'
-												borderColor='gray.400'
-												borderRadius='sm'
-												overflow='hidden'
-												boxShadow='lg'>
-												{renderBarcodeContent(false)}
-											</Box>
-										</Box>
-									</Center>
-
-									{/* Hidden Print-Ready Version */}
-									<Box
-										ref={printRef}
-										position='absolute'
-										left='-9999px'
-										top='-9999px'>
-										{renderBarcodeContent(true)}
-									</Box>
-
+									align="center"
+									w='full'>
+									
 									{/* Action Buttons */}
 									<Box
 										w='full'
-										pt={4}>
+										maxW="210mm"
+										pt={2}>
 										<SimpleGrid
 											columns={2}
 											spacing={4}
@@ -445,28 +412,59 @@ const PrintBarcodePage = () => {
 											mb={4}>
 											<Button
 												onClick={handleDownloadPDF}
+												isLoading={isDownloading}
+												loadingText="Downloading..."
 												colorScheme='purple'
-												size='lg'
-												leftIcon={<Text>📥</Text>}>
+												size='md'
+												leftIcon={<Text>📥</Text>}
+											>
 												Download PDF
 											</Button>
 											<Button
 												onClick={handlePrint}
+												isLoading={isPrinting}
+												loadingText="Preparing Print..."
 												colorScheme='green'
-												size='lg'
-												leftIcon={<Text>🖨️</Text>}>
+												size='md'
+												leftIcon={<Text>🖨️</Text>}
+											>
 												Print Now
 											</Button>
 										</SimpleGrid>
-
-										<Text
-											fontSize='sm'
-											color='gray.500'
-											textAlign='center'>
-											The preview is scaled for visibility. Print/PDF will use exact{' '}
-											{dimensions.width}×{dimensions.height}mm dimensions.
-										</Text>
 									</Box>
+
+									{/* Print-Ready Version Displayed for Preview */}
+									<Box ref={printRef} w="210mm">
+										{printPages.map((pageColumns, pageIndex) => (
+											<Box
+												key={pageIndex}
+												style={{
+													width: '210mm',
+													height: '297mm',
+													padding: '10mm 15mm',
+													backgroundColor: 'white',
+													pageBreakAfter: 'always',
+													position: 'relative',
+													boxSizing: 'border-box'
+												}}
+												boxShadow="xl"
+												mb={pageIndex < printPages.length - 1 ? "20px" : "0"}
+											>
+												<Grid templateColumns={`repeat(${COLUMNS_PER_PAGE}, 1fr)`} gap={4} h="full">
+													{pageColumns.map((colBarcodes, colIndex) => (
+														<Flex key={colIndex} flexDirection="column" gap="6mm" w="50mm">
+															{colBarcodes.map((product, index) => (
+																<Box key={index} w="100%">
+																	{renderBarcodeBox(product)}
+																</Box>
+															))}
+														</Flex>
+													))}
+												</Grid>
+											</Box>
+										))}
+									</Box>
+
 								</VStack>
 							)}
 						</CardBody>
