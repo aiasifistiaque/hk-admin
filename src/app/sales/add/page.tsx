@@ -205,7 +205,7 @@ const CreatePurchase = ({ params }: any) => {
 			<CreateNav
 				isLoading={result?.isLoading}
 				title='Invoice'
-				path='orders'
+				path='sales'
 			/>
 			<CreateBody
 				justify='flex-start'
