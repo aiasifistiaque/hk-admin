@@ -138,6 +138,7 @@ const VDataMenu: FC<any> = ({
 						</Button>
 					}
 					type='post'
+					onSuccess={(item: any) => handleChange(item)}
 				/>
 			)}
 			{item?.addItem && (

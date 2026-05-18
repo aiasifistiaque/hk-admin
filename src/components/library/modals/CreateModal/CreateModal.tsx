@@ -153,7 +153,12 @@ const CreateModal = (props: CreateModalProps) => {
 
 	useEffect(() => {
 		if (isLoading) return;
-		if (isSuccess) onModalClose();
+		if (isSuccess) {
+			if (props.onSuccess) {
+				props.onSuccess(type === 'update' ? updateResult?.data?.doc : result?.data?.doc);
+			}
+			onModalClose();
+		}
 	}, [isLoading]);
 
 	useEffect(() => {

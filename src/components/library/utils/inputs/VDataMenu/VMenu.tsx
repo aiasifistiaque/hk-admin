@@ -42,6 +42,7 @@ const VDataMenu: FC<VDataMenuProps> = ({
 	dataModel,
 	hideNew = false,
 	field,
+	form,
 	type = 'value',
 	dataKey = '_id',
 	menuKey = 'name',

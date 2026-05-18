@@ -21,6 +21,7 @@ type CreateModalProps = {
 		btnText?: string;
 		successMsg?: string;
 	};
+	onSuccess?: (data: any) => void;
 };
 
 export default CreateModalProps;

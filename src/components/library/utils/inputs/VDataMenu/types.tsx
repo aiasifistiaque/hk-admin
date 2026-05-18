@@ -1,6 +1,6 @@
 import { InputProps } from '@chakra-ui/react';
 
-export type VDataMenuProps = InputProps & {
+export type VDataMenuProps = Omit<InputProps, 'type' | 'value' | 'item' | 'form'> & {
 	label: string;
 	isRequired?: boolean;
 	placeholder?: string;
