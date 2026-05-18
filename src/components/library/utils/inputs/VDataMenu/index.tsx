@@ -219,7 +219,13 @@ const VDataMenu: FC<any> = ({
 										<i>Unselect</i>
 									</MenuItem>
 								)}
-								{renderMenuItems}
+								{data?.doc?.length === 0 && !isFetching ? (
+									<Flex p={3} justify='center' fontSize='sm' color='gray.700'>
+										No item found
+									</Flex>
+								) : (
+									renderMenuItems
+								)}
 							</Scroll>
 						</MenuContainer>
 					</>
