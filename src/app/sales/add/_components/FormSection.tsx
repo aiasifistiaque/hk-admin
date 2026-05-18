@@ -23,7 +23,9 @@ const addSupplierModel = createFormFields({
 
 type FormSectionProps = {
 	setItems: any;
-	handleChange: (e: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>) => void;
+	handleChange: (
+		e: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>,
+	) => void;
 	formData: {
 		shippingCost: number;
 		paidAmount: number;
@@ -98,7 +100,9 @@ const FormSection: React.FC<FormSectionProps> = ({
 		}
 	};
 
-	const formattedValue = formData.date ? new Date(formData.date).toISOString().split('T')[0] : '';
+	const formattedValue = formData.date
+		? new Date(formData.date).toISOString().split('T')[0]
+		: '';
 
 	return (
 		<>
@@ -140,14 +144,16 @@ const FormSection: React.FC<FormSectionProps> = ({
 				)}
 			</Row>
 			<Row gridTemplateColumns='1fr 1fr 1fr 1fr'>
-				<VInput
-					{...formFields.paidAmount}
-					value={formData.paidAmount}
+				<VDataMenu
+					{...formFields.paymentMethod}
+					model='assets'
+					value={formData.paymentMethod}
+					unselect={false}
 					onChange={handleChange}
 				/>
 				<VInput
-					{...formFields.discount}
-					value={formData.discount}
+					{...formFields.subTotal}
+					value={invoice.subTotal}
 					onChange={handleChange}
 				/>
 				<VInput
@@ -162,26 +168,19 @@ const FormSection: React.FC<FormSectionProps> = ({
 				/>
 			</Row>
 			<Row cols='1fr 1fr 1fr 1fr'>
-				<VDataMenu
-					{...formFields.paymentMethod}
-					model='assets'
-					value={formData.paymentMethod}
-					unselect={false}
+				<VInput
+					{...formFields.paidAmount}
+					value={formData.paidAmount}
+					onChange={handleChange}
+				/>
+				<VInput
+					{...formFields.discount}
+					value={formData.discount}
 					onChange={handleChange}
 				/>
 				<VInput
 					{...formFields.dueAmount}
-					value={
-						invoice.subTotal +
-						Number(invoice.shipping) +
-						Number(invoice.vat) -
-						Number(invoice.discount)
-					}
-					onChange={handleChange}
-				/>
-				<VInput
-					{...formFields.subTotal}
-					value={invoice.subTotal}
+					value={invoice.total - Number(formData.paidAmount || 0)}
 					onChange={handleChange}
 				/>
 				<VInput
