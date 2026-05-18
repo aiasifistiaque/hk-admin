@@ -57,12 +57,27 @@ const UpdateStringModal: FC<UpdateKeyProps> = ({ item, doc, id, path, type, icon
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
+
+		let body: any = {
+			[key]: type === 'number' ? Number(value) : value,
+		};
+
+		// Propagate price/buyPrice updates to variants if applicable
+		if (
+			(key === 'price' || key === 'buyPrice') &&
+			doc?.hasVariant &&
+			doc?.variant?.length > 0
+		) {
+			body.variant = doc.variant.map((v: any) => ({
+				...v,
+				[key]: type === 'number' ? Number(value) : value,
+			}));
+		}
+
 		trigger({
 			path: path,
 			id,
-			body: {
-				[key]: value,
-			},
+			body,
 			invalidate,
 		});
 	};

@@ -53,12 +53,27 @@ const UpdateDataMenuModal: FC<UpdateKeyProps> = ({ item, doc, id }) => {
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
+
+		let body: any = {
+			[key]: value,
+		};
+
+		// Propagate price/buyPrice updates to variants if applicable
+		if (
+			(key === 'price' || key === 'buyPrice') &&
+			doc?.hasVariant &&
+			doc?.variant?.length > 0
+		) {
+			body.variant = doc.variant.map((v: any) => ({
+				...v,
+				[key]: !isNaN(Number(value)) ? Number(value) : value,
+			}));
+		}
+
 		trigger({
 			path: path,
 			id,
-			body: {
-				[key]: value,
-			},
+			body,
 			invalidate,
 		});
 	};
