@@ -46,20 +46,21 @@ const SaleReturnDetailPage = () => {
 		},
 	);
 
+
 	return (
 		<Layout
 			path='sale-returns'
 			isLoading={isLoading || isFetching}
-			title={`Sale Return: ${data?.invoice || ''}`}>
-			<Column
-				gap={6}
-				py={4}>
+			title={`Sale Return: ${data?.invoice || ''}`}
+		>
+			<Column gap={6} py={4}>
 				{/* Header Section */}
 				<Section heading='Return Information'>
 					<Grid
 						templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }}
 						gap={4}
-						w='full'>
+						w='full'
+					>
 						<GridItem>
 							<Label>Return Invoice</Label>
 							<Text fontWeight='bold'>{data?.invoice}</Text>
@@ -70,7 +71,9 @@ const SaleReturnDetailPage = () => {
 						</GridItem>
 						<GridItem>
 							<Label>Status</Label>
-							<Badge colorScheme={getStatusColor(data?.status)}>{data?.status}</Badge>
+							<Badge colorScheme={getStatusColor(data?.status)}>
+								{data?.status}
+							</Badge>
 						</GridItem>
 						<GridItem>
 							<Label>Customer</Label>
@@ -79,7 +82,9 @@ const SaleReturnDetailPage = () => {
 						<GridItem>
 							<Label>Return Date</Label>
 							<Text>
-								{data?.returnDate ? new Date(data.returnDate).toLocaleDateString() : 'N/A'}
+								{data?.returnDate
+									? new Date(data.returnDate).toLocaleDateString()
+									: 'N/A'}
 							</Text>
 						</GridItem>
 						<GridItem>
@@ -94,10 +99,13 @@ const SaleReturnDetailPage = () => {
 					<Grid
 						templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }}
 						gap={4}
-						w='full'>
+						w='full'
+					>
 						<GridItem>
 							<Label>Reason</Label>
-							<Text textTransform='capitalize'>{data?.reason?.replace(/_/g, ' ')}</Text>
+							<Text textTransform='capitalize'>
+								{data?.reason?.replace(/_/g, ' ')}
+							</Text>
 						</GridItem>
 						<GridItem>
 							<Label>Item Condition</Label>
@@ -118,14 +126,12 @@ const SaleReturnDetailPage = () => {
 
 				{/* Items Table */}
 				<Section heading='Returned Items'>
-					<Box
-						overflowX='auto'
-						w='full'>
+					<Box overflowX='auto' w='full'>
 						<Table variant='simple'>
 							<Thead>
 								<Tr>
 									<Th>Product</Th>
-									<Th>Variant</Th>
+									{/* <Th>Variant</Th> */}
 									<Th isNumeric>Quantity</Th>
 									<Th isNumeric>Unit Price</Th>
 									<Th isNumeric>Total</Th>
@@ -135,10 +141,14 @@ const SaleReturnDetailPage = () => {
 								{data?.items?.map((item: any, index: number) => (
 									<Tr key={index}>
 										<Td>{item.name || item.product?.name || 'N/A'}</Td>
-										<Td>{item.variant || 'N/A'}</Td>
-										<Td isNumeric>{item.quantity}</Td>
-										<Td isNumeric>৳{Number(item.price || 0).toLocaleString()}</Td>
-										<Td isNumeric>৳{Number(item.total || 0).toLocaleString()}</Td>
+										{/* <Td>{item.variant || 'N/A'}</Td> */}
+										<Td isNumeric>{item.qty}</Td>
+										<Td isNumeric>
+											৳{Number(item.unitPrice || 0).toLocaleString()}
+										</Td>
+										<Td isNumeric>
+											৳{Number(item.totalPrice || 0).toLocaleString()}
+										</Td>
 									</Tr>
 								))}
 							</Tbody>
@@ -151,27 +161,26 @@ const SaleReturnDetailPage = () => {
 					<Grid
 						templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
 						gap={4}
-						w='full'>
+						w='full'
+					>
 						<GridItem>
-							<Flex
-								justify='space-between'
-								py={2}>
+							<Flex justify='space-between' py={2}>
 								<Text>Subtotal</Text>
 								<Text>৳{Number(data?.subTotal || 0).toLocaleString()}</Text>
 							</Flex>
 							<Divider />
-							<Flex
-								justify='space-between'
-								py={2}>
+							<Flex justify='space-between' py={2}>
 								<Text>Restocking Fee</Text>
-								<Text color='red.500'>- ৳{Number(data?.restockingFee || 0).toLocaleString()}</Text>
+								<Text color='red.500'>
+									- ৳{Number(data?.restockingFee || 0).toLocaleString()}
+								</Text>
 							</Flex>
 							<Divider />
-							<Flex
-								justify='space-between'
-								py={2}>
+							<Flex justify='space-between' py={2}>
 								<Text fontWeight='bold'>Total Refund</Text>
-								<Text fontWeight='bold'>৳{Number(data?.refundAmount || 0).toLocaleString()}</Text>
+								<Text fontWeight='bold'>
+									৳{Number(data?.refundAmount || 0).toLocaleString()}
+								</Text>
 							</Flex>
 						</GridItem>
 					</Grid>
