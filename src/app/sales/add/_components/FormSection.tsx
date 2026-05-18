@@ -104,32 +104,45 @@ const FormSection: React.FC<FormSectionProps> = ({
 		<>
 			<Row cols='1fr 1fr 1fr 1fr'>
 				<VDataMenu
-					{...formFields.customer}
-					dataModel={addSupplierModel}
-					onChange={handleChange}
-					value={formData.customer}
-				/>
-				<VDataMenu
 					{...formFields.warehouse}
 					// dataModel={addSupplierModel}
 					onChange={handleChange}
 					value={formData.warehouse}
+				/>
+				<VDataMenu
+					{...formFields.customer}
+					dataModel={addSupplierModel}
+					onChange={handleChange}
+					value={formData.customer}
 				/>
 				<VInput
 					{...formFields.date}
 					value={formattedValue}
 					onChange={handleChange}
 				/>
-				<VInput
-					{...formFields.subTotal}
-					value={invoice.subTotal}
-					onChange={handleChange}
-				/>
+				{formData?.warehouse ? (
+					<VDataMenu
+						label='Add Product'
+						menuKey='variantName'
+						model={`stocks?warehouse=${formData.warehouse}`}
+						type='object'
+						subMenuChildren='- Stock: '
+						subMenuKey='quantity'
+						value={''}
+						unselect={false}
+						isRequired={true}
+						onChange={handleSelectProduct}
+					/>
+				) : (
+					<Text color='red' fontWeight='600'>
+						Please select warehouse first
+					</Text>
+				)}
 			</Row>
-			<Row cols='1fr 1fr 1fr 1fr'>
+			<Row gridTemplateColumns='1fr 1fr 1fr 1fr'>
 				<VInput
-					{...formFields.vat}
-					value={invoice.vat}
+					{...formFields.paidAmount}
+					value={formData.paidAmount}
 					onChange={handleChange}
 				/>
 				<VInput
@@ -143,12 +156,19 @@ const FormSection: React.FC<FormSectionProps> = ({
 					onChange={handleChange}
 				/>
 				<VInput
-					{...formFields.paidAmount}
-					value={formData.paidAmount}
+					{...formFields.vat}
+					value={invoice.vat}
 					onChange={handleChange}
 				/>
 			</Row>
-			<Row gridTemplateColumns='1fr 1fr 1fr'>
+			<Row cols='1fr 1fr 1fr 1fr'>
+				<VDataMenu
+					{...formFields.paymentMethod}
+					model='assets'
+					value={formData.paymentMethod}
+					unselect={false}
+					onChange={handleChange}
+				/>
 				<VInput
 					{...formFields.dueAmount}
 					value={
@@ -160,50 +180,15 @@ const FormSection: React.FC<FormSectionProps> = ({
 					onChange={handleChange}
 				/>
 				<VInput
+					{...formFields.subTotal}
+					value={invoice.subTotal}
+					onChange={handleChange}
+				/>
+				<VInput
 					{...formFields.total}
 					value={invoice.total}
 					onChange={handleChange}
 				/>
-				{/* <VSelect
-					{...formFields.paymentMethod}
-					value={formData.paymentMethod}
-					onChange={handleChange}>
-					<option value='cod'>COD</option>
-					<option value='cash'>Cash</option>
-					<option value='card'>Card</option>
-					<option value='cheque'>Cheque</option>
-					<option value='bkash'>bKash</option>
-					<option value='nagad'>Nagad</option>
-					<option value='other'>other</option>
-				</VSelect> */}
-				<VDataMenu
-					{...formFields.paymentMethod}
-					model='assets'
-					value={formData.paymentMethod}
-					unselect={false}
-					onChange={handleChange}
-				/>
-			</Row>
-			<Row gridTemplateColumns='1fr'>
-				{formData?.warehouse ? (
-					<VDataMenu
-						label='Add product'
-						menuKey='variantName'
-						model={`stocks?warehouse=${formData.warehouse}`}
-						type='object'
-						subMenuChildren='- Stock: '
-						subMenuKey='quantity'
-						value={''}
-						unselect={false}
-						onChange={handleSelectProduct}
-					/>
-				) : (
-					<Text
-						color='red'
-						fontWeight='600'>
-						Please select warehouse first
-					</Text>
-				)}
 			</Row>
 		</>
 	);

@@ -17,37 +17,37 @@ const formFields = {
 		type: 'date',
 		isRequired: true,
 	},
-
 	shippingCost: {
 		name: 'shippingCost',
 		label: 'Shipping Cost',
 		type: 'number',
-		isRequired: true,
+		// isRequired: true,
 	},
 	paymentMethod: {
 		name: 'paymentMethod',
 		label: 'Payment Method',
 		model: 'assets',
+		isRequired: true,
 	},
 	discount: {
 		name: 'discount',
 		label: 'Discount',
 		type: 'number',
-		isRequired: true,
+		// isRequired: true,
 	},
 	vat: {
 		name: 'vat',
 		label: 'VAT',
 		type: 'number',
-		isReadOnly: true,
-		isRequired: true,
+		// isReadOnly: true,
+		// isRequired: true,
 	},
 	subTotal: {
 		name: 'subTotal',
 		label: 'Sub Total',
 		type: 'number',
 		isReadOnly: true,
-		isRequired: true,
+		// isRequired: true,
 	},
 	paidAmount: {
 		name: 'paidAmount',
