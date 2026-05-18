@@ -35,6 +35,11 @@ const tags = [
 	'analytics/products/top-selling?orderDate_last=days_7',
 	'analytics/customers/top-buying?orderDate_last=days_7',
 	'analytics/yearly-profit-loss',
+	'shops',
+	'warehouses',
+	'customers',
+	'route',
+	'orders',
 ];
 
 export const mainApi = createApi({
