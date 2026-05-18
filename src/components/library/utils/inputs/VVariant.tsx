@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useRef } from 'react';
 
 import { FormControl, Image, Stack, Flex, Heading, Input, Grid } from '@chakra-ui/react';
 import {
@@ -44,6 +44,34 @@ const VVariant: FC<FormDataType> = ({
 	const [variants, setVariants] = useState(value || []);
 	const [attributes, setAttributes] = useState<any>([]);
 	const { data: warehouses } = useGetAllQuery({ path: 'warehouses', limit: '999' });
+
+	const prevPriceRef = useRef(form?.price);
+	const prevBuyPriceRef = useRef(form?.buyPrice);
+
+	useEffect(() => {
+		const priceChanged = form?.price !== prevPriceRef.current;
+		const buyPriceChanged = form?.buyPrice !== prevBuyPriceRef.current;
+
+		if (priceChanged || buyPriceChanged) {
+			const currentVariants = value || variants || [];
+			const updatedVariants = currentVariants.map((v: any) => ({
+				...v,
+				price: priceChanged ? form?.price : v.price,
+				buyPrice: buyPriceChanged ? form?.buyPrice : v.buyPrice,
+			}));
+			
+			setVariants(updatedVariants);
+			onChange({
+				target: {
+					name,
+					value: updatedVariants,
+				},
+			});
+			prevPriceRef.current = form?.price;
+			prevBuyPriceRef.current = form?.buyPrice;
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [form?.price, form?.buyPrice]);
 
 	// Generate all combinations of attribute values
 	const generateVariantCombinations = (attrs: string[], customAttrs: any) => {
@@ -232,7 +260,7 @@ const VVariant: FC<FormDataType> = ({
 											<Tr>
 												<Th>Name</Th>
 												<Th isNumeric>Cost Price</Th>
-												<Th isNumeric>Sell Price</Th>
+												<Th isNumeric>Sale Price</Th>
 												<Th isNumeric>Barcode</Th>
 												<Th isNumeric>SKU</Th>
 											</Tr>
@@ -246,7 +274,7 @@ const VVariant: FC<FormDataType> = ({
 															size='sm'
 															value={item?.buyPrice}
 															name='buyPrice'
-															onChange={e => onVariantValueChange(i, 'cost', e.target.value)}
+															onChange={e => onVariantValueChange(i, 'buyPrice', e.target.value)}
 														/>
 													</Td>
 													<Td isNumeric>
