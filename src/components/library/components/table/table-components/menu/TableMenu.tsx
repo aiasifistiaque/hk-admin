@@ -16,6 +16,7 @@ import {
 	useGetConfigQuery,
 } from '../../../..';
 import Link from 'next/link';
+import PrintInvoiceMenuItem from './PrintInvoiceMenuItem';
 
 type TableMenuProps = {
 	data: any;
@@ -260,6 +261,15 @@ const TableMenu: FC<TableMenuProps> = ({
 						case 'custom-modal':
 							return (
 								<item.modal {...commonProps} data={doc} title={item?.title} />
+							);
+						case 'print-invoice':
+							return (
+								<PrintInvoiceMenuItem
+									key={i}
+									id={id}
+									title={item?.title}
+									index={i}
+								/>
 							);
 						default:
 							return <MenuItem key={i}>{item?.title}</MenuItem>;

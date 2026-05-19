@@ -18,7 +18,8 @@ type Item =
 	| 'custom-redirect'
 	| 'duplicate'
 	| 'view-server-modal'
-	| 'edit-server-modal';
+	| 'edit-server-modal'
+	| 'print-invoice';
 
 type BaseMenuItem = {
 	title: string;
