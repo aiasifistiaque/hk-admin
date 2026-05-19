@@ -1,26 +1,6 @@
 const updateAddressModel: any = [
 	{
-		name: 'address.name',
-		label: 'Recipient Name',
-		isRequired: true,
-		type: 'text',
-	},
-	{
-		name: 'address.email',
-		label: 'Recipient Email',
-		isRequired: true,
-		type: 'text',
-		span: 1,
-	},
-	{
-		name: 'address.phone',
-		label: 'Recipient Phone',
-		isRequired: true,
-		type: 'text',
-		span: 1,
-	},
-	{
-		name: 'address.address',
+		name: 'address',
 		label: 'Full Address',
 		isRequired: true,
 		type: 'textarea',

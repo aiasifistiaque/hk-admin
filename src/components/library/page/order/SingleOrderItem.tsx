@@ -11,7 +11,7 @@ const SingleOrderItem = ({ item, index }: { item: any; index: number }) => {
 				{item?.variantName && `- ${item?.variantName}`}
 			</OrderItemText>
 			<GridItem textAlign='center'>{item?.unitPrice?.toFixed(2)?.toLocaleString()}</GridItem>
-			<GridItem textAlign='center'>{item?.qty - item?.returnQty}</GridItem>
+			<GridItem textAlign='center'>{item?.qty}</GridItem>
 			<GridItem textAlign='right'>
 				{currency.symbol}
 				{(item?.unitPrice * item?.qty).toFixed(2)?.toLocaleString()}

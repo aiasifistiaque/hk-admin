@@ -13,27 +13,32 @@ const BasicDetails = ({ data }: { data: any }) => {
 		return `${add}${street}${city}${postalCode}${country}`;
 	};
 	return (
-		<Grid
-			gridTemplateColumns={{ base: '1fr', md: '1fr 1fr' }}
-			gap={2}>
+		<Grid gridTemplateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={2}>
 			<Section>
 				<Item title='Invoice:'>#{data?.invoice}</Item>
-				<Item title='Customer:'>{data?.customer?.name || 'Walk-in Customer'}</Item>
-				<Item title='Order Date:'>
-					{data?.createdAt ? new Date(data?.createdAt).toLocaleDateString() : ''}
-				</Item>
 				<Item title='Order Time:'>
-					{data?.createdAt ? new Date(data?.createdAt).toLocaleTimeString() : ''}
+					{data?.createdAt
+						? new Date(data?.createdAt).toLocaleTimeString()
+						: ''}
 				</Item>
-
-				<Item title='Address:'>{convertAddress(data?.address)}</Item>
-			</Section>
-			<Section>
-				<Item title='Recipient:'>{data?.address?.name}</Item>
-				<Item title='Email:'>{data?.address?.email}</Item>
-				<Item title='Phone:'>{data?.address?.phone}</Item>
+				<Item title='Order Date:'>
+					{data?.createdAt
+						? new Date(data?.createdAt).toLocaleDateString()
+						: ''}
+				</Item>
+				<Item title='Recipient Address:'>{data?.address}</Item>
 				<Item title='Payment Status:'>{data?.isPaid ? 'Paid' : 'Due'}</Item>
 				<Item title='Order Note:'>{data?.note || '--'}</Item>
+			</Section>
+			<Section>
+				<Item title='Customer:'>
+					{data?.customer?.name || 'Walk-in Customer'}
+				</Item>
+				<Item title='Email:'>{data?.customer?.email}</Item>
+				<Item title='Phone:'>{data?.customer?.phone}</Item>
+				{data?.customer?.addresses?.map((add: any, i: number) => (
+					<Item title={`Address ${i + 1}:`}>{add.description}</Item>
+				))}
 			</Section>
 		</Grid>
 	);

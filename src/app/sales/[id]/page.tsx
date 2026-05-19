@@ -46,7 +46,7 @@ const OrderDetailPage = () => {
 
 	const { data, isFetching, isLoading } = useGetByIdQuery(
 		{
-			path: 'orders',
+			path: 'sales',
 			id: id,
 		},
 		{
@@ -54,9 +54,11 @@ const OrderDetailPage = () => {
 		}
 	);
 
+	console.log(data, 'data');
+
 	const handleExport = () => {
 		trigger({
-			path: 'orders',
+			path: 'sales',
 			body: { id: data?._id, invoice: data?.invoice, test: 'test' },
 			type: 'invoice/dl',
 		});
@@ -66,7 +68,7 @@ const OrderDetailPage = () => {
 		return (
 			<Layout
 				title='Loading...'
-				path='orders'>
+				path='sales'>
 				...
 			</Layout>
 		);
@@ -74,7 +76,7 @@ const OrderDetailPage = () => {
 	return (
 		<Layout
 			title={`Invoice #${data?.invoice}`}
-			path='orders'>
+				path='sales'>
 			<Column
 				gap={{ base: 4, md: 6 }}
 				pt={{ base: 2, md: 0 }}>
@@ -82,7 +84,7 @@ const OrderDetailPage = () => {
 					heading='Order DETAILS'
 					rightComponent={
 						<CreateModal
-							path='orders'
+							path='sales'
 							id={id}
 							type='update'
 							data={updateAddressModel}>
@@ -100,18 +102,6 @@ const OrderDetailPage = () => {
 						</Button>
 					</Flex>
 				</Section>
-				{/* <Section
-					heading='Customer QC Details'
-					gap={2}>
-					<QcMain phone={data?.address?.phone} />
-				</Section> */}
-				{/* <Section heading='Delivery Details'> */}
-				{/* <OrderDelivery
-					id={data?.delivery}
-					order={id}
-					orderData={data}
-				/> */}
-				{/* </Section> */}
 				<Section
 					mb={2}
 					heading='Order Details'
