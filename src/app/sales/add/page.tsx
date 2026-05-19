@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import {
 	useIsMobile,
 	Column,
@@ -15,9 +15,10 @@ import {
 	MintTableContainer,
 	useGetByIdQuery,
 	PurchaseProduct,
+	useExportMutation,
 } from '@/components/library';
 
-import { Grid, Table, Thead, Tbody, Th, useToast } from '@chakra-ui/react';
+import { Button, Grid, Table, Thead, Tbody, Th, useToast } from '@chakra-ui/react';
 import {
 	HEADINGS,
 	HeadingProps,
@@ -40,6 +41,8 @@ type FormType = {
 const CreatePurchase = ({ params }: any) => {
 	const isMobile = useIsMobile();
 	const toast = useToast();
+	const printAfterSave = useRef(false);
+	const formRef = useRef<HTMLFormElement>(null);
 
 	const [formData, setFormData] = useState<FormType>({
 		shippingCost: 0,
@@ -101,11 +104,27 @@ const CreatePurchase = ({ params }: any) => {
 	};
 
 	const [trigger, result] = usePostMutation();
-	console.log('result', result);
+	const [exportTrigger, exportResult] = useExportMutation();
+
 	useCustomToast({
 		...result,
 		successText: 'Invoice Created Successfully',
 	});
+
+	// Handle redirect & print after save
+	useEffect(() => {
+		if (!result?.isLoading && result?.isSuccess && result?.data?.doc?.id) {
+			if (printAfterSave.current) {
+				printAfterSave.current = false;
+				exportTrigger({
+					path: 'sales',
+					body: { id: result.data.doc.id },
+					type: 'invoice/dl',
+				});
+			}
+			// Redirect after a brief delay to allow download to start
+		}
+	}, [result?.isLoading, result?.isSuccess]);
 
 	useRedirect({
 		isSuccess: result?.isSuccess,
@@ -201,11 +220,23 @@ const CreatePurchase = ({ params }: any) => {
 	);
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form ref={formRef} onSubmit={handleSubmit}>
 			<CreateNav
 				isLoading={result?.isLoading}
 				title='Invoice'
 				path='sales'
+				extraButtons={
+					<Button
+						size='sm'
+						colorScheme='green'
+						isLoading={result?.isLoading || exportResult?.isLoading}
+						onClick={() => {
+							printAfterSave.current = true;
+							formRef.current?.requestSubmit();
+						}}>
+						Save &amp; Print
+					</Button>
+				}
 			/>
 			<CreateBody
 				justify='flex-start'

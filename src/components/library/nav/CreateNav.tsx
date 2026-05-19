@@ -1,5 +1,5 @@
 'use client';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Button, Center, CloseButton, Divider, Flex, Heading } from '@chakra-ui/react';
@@ -9,9 +9,10 @@ type CreateNavProps = {
 	title: string;
 	path: string;
 	isLoading: boolean;
+	extraButtons?: ReactNode;
 };
 
-const CreateNav: FC<CreateNavProps> = ({ title, path, isLoading }) => {
+const CreateNav: FC<CreateNavProps> = ({ title, path, isLoading, extraButtons }) => {
 	const router = useRouter();
 	const handleBackClick = () => {
 		router.replace(`/${path}`);
@@ -45,6 +46,7 @@ const CreateNav: FC<CreateNavProps> = ({ title, path, isLoading }) => {
 				colorScheme='gray'>
 				Discard
 			</Button>
+			{extraButtons}
 			<Button
 				type='submit'
 				size='sm'
