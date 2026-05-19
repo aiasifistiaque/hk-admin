@@ -15,8 +15,8 @@ import {
 	ViewServerModal,
 	useGetConfigQuery,
 } from '../../../..';
-import Link from 'next/link';
 import PrintInvoiceMenuItem from './PrintInvoiceMenuItem';
+import { GiReturnArrow } from 'react-icons/gi';
 
 type TableMenuProps = {
 	data: any;
@@ -72,14 +72,6 @@ const TableMenu: FC<TableMenuProps> = ({
 					}
 
 					switch (item.type) {
-						// case 'custom-redirect':
-						// 	return (
-						// 		<MenuItem
-						// 			href={item?.href(doc) || '#'}
-						// 			key={i}>
-						// 			{item?.title}
-						// 		</MenuItem>
-						// 	);
 						case 'custom-redirect':
 							let customHref = '#';
 
@@ -95,6 +87,7 @@ const TableMenu: FC<TableMenuProps> = ({
 
 							return (
 								<MenuItem href={customHref} key={i}>
+									<GiReturnArrow />
 									{item?.title}
 								</MenuItem>
 							);

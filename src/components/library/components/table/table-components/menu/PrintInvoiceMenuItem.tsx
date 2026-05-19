@@ -2,6 +2,7 @@
 import { FC, useState } from 'react';
 import { MenuItem } from '../../../..';
 import { useSelector } from 'react-redux';
+import { BiPrinter } from 'react-icons/bi';
 
 const URL = process.env.NEXT_PUBLIC_BACKEND || 'http://localhost:5000';
 
@@ -45,6 +46,7 @@ const PrintInvoiceMenuItem: FC<PrintInvoiceMenuItemProps> = ({
 
 	return (
 		<MenuItem key={index} onClick={handlePrint}>
+			<BiPrinter />
 			{loading ? 'Loading...' : title}
 		</MenuItem>
 	);
