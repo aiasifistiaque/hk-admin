@@ -54,12 +54,11 @@ const OrderDetailPage = () => {
 		}
 	);
 
-	console.log(data, 'data');
 
 	const handleExport = () => {
 		trigger({
 			path: 'sales',
-			body: { id: data?._id, invoice: data?.invoice, test: 'test' },
+			body: { id: data?._id },
 			type: 'invoice/dl',
 		});
 	};
