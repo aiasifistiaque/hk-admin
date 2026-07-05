@@ -24,6 +24,40 @@ type TableProps = {
 	children?: ReactNode;
 };
 
+const getItemStockValue = (item: any) => {
+	const sumStockEntries = (value: any) => {
+		if (typeof value === 'number' && Number.isFinite(value)) return value;
+		if (Array.isArray(value)) {
+			return value.reduce((sum: number, entry: any) => {
+				if (typeof entry === 'number' && Number.isFinite(entry)) return sum + entry;
+				if (entry && typeof entry === 'object') {
+					return sum + Number(entry?.stock ?? entry?.quantity ?? 0);
+				}
+				return sum;
+			}, 0);
+		}
+		if (value && typeof value === 'object') {
+			return Number(value?.stock ?? value?.quantity ?? 0);
+		}
+		return 0;
+	};
+
+	const primaryStock = sumStockEntries(item?.primaryStock);
+	const openingStock = sumStockEntries(item?.openingStock);
+	const variantStock = Array.isArray(item?.variant)
+		? item.variant.reduce((sum: number, variant: any) => sum + sumStockEntries(variant?.openingStock), 0)
+		: 0;
+
+	if (typeof item?.stock === 'number' && Number.isFinite(item.stock)) {
+		return item.stock;
+	}
+	if (typeof item?.totalStock === 'number' && Number.isFinite(item.totalStock)) {
+		return item.totalStock;
+	}
+
+	return primaryStock + openingStock + variantStock;
+};
+
 // Define the PageTable component
 const BackendPageTable: FC<TableProps> = ({ table, layoutPath, children }) => {
 	const { page, limit, search, sort, filters, preferences, selectedItems }: any = useAppSelector(
@@ -97,8 +131,15 @@ const BackendPageTable: FC<TableProps> = ({ table, layoutPath, children }) => {
 			showMenu={table?.menu ? true : false}
 		/>
 	);
+	const shouldComputeItemStock = table?.path === 'items';
+	const tableItems = Array.isArray(data?.doc)
+		? data.doc.map((item: any) =>
+				shouldComputeItemStock ? { ...item, stock: getItemStockValue(item) } : item
+			)
+		: [];
+
 	// Create the table body by mapping over the data and creating a TableRowComponent for each item
-	const body = data?.doc?.map((item: any) => (
+	const body = tableItems.map((item: any) => (
 		<TableRowComponent
 			onClick={() => table?.clickable && router.push(`${table?.toPath}/${item?._id}`)}
 			selectable={selectable}

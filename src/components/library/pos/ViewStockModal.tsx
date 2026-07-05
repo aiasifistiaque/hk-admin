@@ -59,7 +59,7 @@ const ViewStockModal = ({ id }: { id: string }) => {
 		refetch: refetchStock,
 	} = useGetAllQuery({
 		path: 'stocks',
-		limit: 32,
+		limit: 99999,
 		filters: {
 			item: id,
 		},
