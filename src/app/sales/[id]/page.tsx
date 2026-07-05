@@ -106,7 +106,7 @@ const OrderDetailPage = () => {
 					heading='Order Details'
 					rightComponent={
 						<CreateModal
-							path='orders'
+							path='sales'
 							id={id}
 							type='update'
 							data={updateForm}>
