@@ -83,7 +83,7 @@ const FormSection: React.FC<FormSectionProps> = ({
 			return;
 		} else {
 			const newItem = {
-				_id: value?._id,
+				_id: value?.item || value?._id,
 				image: value?.image,
 				name: value?.variantName,
 				price: value?.variantPrice,
@@ -92,9 +92,15 @@ const FormSection: React.FC<FormSectionProps> = ({
 				subTotal: value?.variantPrice,
 				qty: 1,
 				totalStock: value?.quantity,
+				variantId: value?.variant,
 			};
 
-			console.log(newItem);
+			console.log('[FORM] Added item:', {
+				_id: newItem._id,
+				variantId: newItem.variantId,
+				name: newItem.name,
+				fullValue: value,
+			});
 
 			setItems((prevData: any) => [...prevData, newItem]);
 		}

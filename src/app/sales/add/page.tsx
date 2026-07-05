@@ -183,6 +183,12 @@ const CreatePurchase = ({ params }: any) => {
 			warehouse: formData?.warehouse,
 		};
 
+		console.log('[SUBMIT] Sale items:', invoice?.items?.map((i: any) => ({
+			_id: i._id,
+			name: i.name,
+			variantId: i.variantId,
+		})));
+
 		trigger({
 			invalidate: ['sales', 'products', 'orders'],
 			path: 'sales',

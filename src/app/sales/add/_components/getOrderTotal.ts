@@ -46,6 +46,7 @@ const useGetOrderTotal = ({ items = [], discount = 0, shipping = 0 }: GetOrderTy
 				unitPrice: item.price,
 				unitProfit,
 				profit: unitProfit * item.qty,
+				variantId: item.variantId,
 			};
 			sItems.push(cartItem);
 		}

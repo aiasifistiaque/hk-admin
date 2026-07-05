@@ -95,11 +95,24 @@ const BackendPageTable: FC<TableProps> = ({ table, layoutPath, children }) => {
 			path: table?.path,
 		},
 		{
-			pollingInterval: 10000, // Poll every 10 seconds (set your desired interval in ms)
+			pollingInterval: table?.path === 'items' ? 3000 : 10000,
 		}
 	);
 
 	const { data: userData } = useGetSelfQuery({});
+
+	const shouldComputeItemStock = table?.path === 'items';
+	const itemIds = shouldComputeItemStock && Array.isArray(data?.doc) ? data.doc.map((d: any) => d._id).join(',') : '';
+	const { data: stocksData } = useGetAllQuery(
+		{
+			path: 'stocks',
+			limit: 99999,
+			filters: { item_in: itemIds },
+		},
+		{ skip: !shouldComputeItemStock || !itemIds }
+	);
+
+	const stocks = Array.isArray(stocksData?.doc) ? stocksData.doc : [];
 
 	useEffect(() => {
 		if (table?.preferences) {
@@ -131,11 +144,24 @@ const BackendPageTable: FC<TableProps> = ({ table, layoutPath, children }) => {
 			showMenu={table?.menu ? true : false}
 		/>
 	);
-	const shouldComputeItemStock = table?.path === 'items';
+
 	const tableItems = Array.isArray(data?.doc)
-		? data.doc.map((item: any) =>
-				shouldComputeItemStock ? { ...item, stock: getItemStockValue(item) } : item
-			)
+		? data.doc.map((item: any) => {
+				if (shouldComputeItemStock) {
+					if (stocksData) {
+						const itemStocks = stocks.filter((s: any) => s?.item === item._id || s?.item?._id === item._id);
+						let totalStock = 0;
+						if (itemStocks.length > 0) {
+							totalStock = itemStocks.reduce((sum: number, s: any) => sum + (s.quantity ?? 0), 0);
+						} else {
+							totalStock = getItemStockValue(item);
+						}
+						return { ...item, stock: totalStock };
+					}
+					return { ...item, stock: getItemStockValue(item) };
+				}
+				return item;
+		  })
 		: [];
 
 	// Create the table body by mapping over the data and creating a TableRowComponent for each item

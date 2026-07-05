@@ -109,7 +109,8 @@ const OrderDetailPage = () => {
 							path='sales'
 							id={id}
 							type='update'
-							data={updateForm}>
+							data={updateForm}
+							invalidate={['sales', 'items']}>
 							<Button size='sm'>Update Order Status</Button>
 						</CreateModal>
 					}>
